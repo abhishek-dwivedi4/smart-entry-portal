@@ -1,0 +1,1469 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Entry Portal | Vande Bharatam Grassroots Hostel Innovation Movement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --vande-bg: #030914;
+      --vande-bg-surface: #071226;
+      --vande-card: rgba(13, 25, 46, 0.78);
+      --vande-card-border: rgba(255, 107, 0, 0.22);
+      --vande-orange: #FF6B00;
+      --vande-orange-bright: #FF8800;
+      --vande-orange-glow: rgba(255, 107, 0, 0.35);
+      --vande-gold: #FFB800;
+      --vande-green: #10B981;
+      --vande-text: #F8FAFC;
+      --vande-muted: #94A3B8;
+      --vande-line: rgba(255, 255, 255, 0.08);
+      --vande-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      --vande-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.7);
+      --radius: 20px;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans','Poppins',sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--vande-bg);color:var(--vande-text);overflow-x:hidden;position:relative;}
+    img{display:block;max-width:100%;height:auto;}
+    a{text-decoration:none;color:inherit;}
+    button,input,textarea,select{font:inherit;}
+
+    /* Background Ambient Glows */
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(100px);
+      opacity: 0.25;
+    }
+    body::before {
+      width: 450px;
+      height: 450px;
+      background: var(--vande-orange);
+      top: -100px;
+      left: -100px;
+    }
+    body::after {
+      width: 500px;
+      height: 500px;
+      background: #0052FF;
+      bottom: -150px;
+      right: -150px;
+    }
+
+    .container{width:min(1280px, calc(100% - 32px));margin:auto;position:relative;z-index:1;}
+    .section{padding:90px 0;}
+    .section-dark{background:var(--vande-bg);}
+    .section-surface{background:var(--vande-bg-surface);border-top:1px solid var(--vande-line);border-bottom:1px solid var(--vande-line);}
+
+    /* Topbar */
+    .topbar{
+      background: #020610;
+      color: #CBD5E1;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 107, 0, 0.2);
+    }
+    .topbar-wrap{
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 8px 0;
+    }
+    .topbar-left, .topbar-right{display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+    .topbar strong{color:#FFF;font-weight:600;}
+    .topbar-flag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:rgba(255,107,0,0.12);border:1px solid rgba(255,107,0,0.3);color:var(--vande-gold);font-weight:700;font-size:11px;}
+
+    /* Header */
+    .header{
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(3, 9, 20, 0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 107, 0, 0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    .nav{
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand{display:flex;align-items:center;gap:14px;min-width:0;cursor:pointer;user-select:none;}
+    .brand-badge{
+      width: 52px; height: 52px; border-radius: 16px; overflow: hidden;
+      background: linear-gradient(135deg, var(--vande-orange), #071226);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 20px var(--vande-orange-glow);
+      border: 1px solid rgba(255,107,0,0.4);
+      flex-shrink: 0;
+      transition: .25s ease;
+    }
+    .brand:hover .brand-badge{transform:scale(1.05);}
+    .brand-badge img{width:100%;height:100%;object-fit:cover;}
+    .brand-text{min-width:0;}
+    .brand-text small{display:block;font-size:11px;color:var(--vande-gold);letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+    .brand-text span{display:block;font-size:20px;font-weight:800;color:#FFF;white-space:nowrap;}
+
+    .nav-links{display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+    .nav-links a{
+      font-size:14px;font-weight:600;color:#E2E8F0;position:relative;
+      transition:.25s ease;
+    }
+    .nav-links a:hover{color:var(--vande-orange-bright);}
+    .nav-links a::after{
+      content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;
+      background:var(--vande-orange);transition:.25s ease;border-radius:999px;
+    }
+    .nav-links a:hover::after{width:100%;}
+
+    .nav-actions{display:flex;align-items:center;gap:12px;}
+    .menu-toggle{
+      display:none;border:none;background:rgba(255,107,0,0.12);color:var(--vande-orange-bright);
+      width:46px;height:46px;border-radius:14px;font-size:22px;cursor:pointer;border:1px solid rgba(255,107,0,0.3);
+    }
+
+    /* Buttons */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      border:none;cursor:pointer;padding:14px 24px;border-radius:14px;
+      font-weight:700;font-size:14px;transition:.25s ease;text-align:center;
+    }
+    .btn-vande{
+      background: linear-gradient(135deg, var(--vande-orange) 0%, var(--vande-orange-bright) 100%);
+      color: #FFF;
+      box-shadow: 0 10px 25px var(--vande-orange-glow);
+    }
+    .btn-vande:hover{transform:translateY(-2px);filter:brightness(1.1);color:#FFF;}
+    .btn-outline-vande{
+      background: rgba(255, 107, 0, 0.08);
+      border: 1px solid rgba(255, 107, 0, 0.4);
+      color: #FFA048;
+    }
+    .btn-outline-vande:hover{background:rgba(255,107,0,0.2);color:#FFF;border-color:var(--vande-orange);}
+
+    /* Hero */
+    .hero{
+      position:relative;overflow:hidden;
+      background: linear-gradient(180deg, #020713 0%, #071328 100%);
+      padding: 96px 0 80px;
+      border-bottom: 1px solid rgba(255,107,0,0.15);
+    }
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:36px;align-items:center;}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;
+      border:1px solid rgba(255,107,0,0.35);background:rgba(255,107,0,0.12);
+      color:var(--vande-gold);font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+      margin-bottom:20px;
+    }
+    .hero h1{
+      font-size:52px;line-height:1.1;font-weight:800;margin-bottom:20px;
+      background: linear-gradient(135deg, #FFFFFF 40%, var(--vande-gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p{font-size:17px;line-height:1.8;color:var(--vande-muted);margin-bottom:30px;}
+    .hero-btns{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:32px;}
+    .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+    .hero-stat{
+      padding:18px;border-radius:18px;background:var(--vande-card);
+      border:1px solid var(--vande-card-border);backdrop-filter:blur(14px);
+    }
+    .hero-stat h3{font-size:26px;color:var(--vande-orange-bright);margin-bottom:4px;font-weight:800;}
+    .hero-stat p{font-size:12px;margin:0;color:var(--vande-muted);line-height:1.5;}
+
+    .hero-card{
+      background: var(--vande-card);
+      border: 1px solid var(--vande-card-border);
+      border-radius: 28px;
+      padding: 26px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--vande-shadow-lg);
+    }
+    .hero-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;}
+    .hero-card-top h3{font-size:22px;font-weight:800;color:#FFF;}
+    .live-badge{padding:6px 14px;border-radius:999px;background:rgba(16,185,129,0.18);color:#34D399;font-size:12px;font-weight:800;border:1px solid rgba(16,185,129,0.3);}
+
+    .dashboard-preview{border-radius:20px;background:#050D1E;padding:20px;border:1px solid var(--vande-line);}
+    .dashboard-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px;}
+    .mini-box{padding:16px;border:1px solid rgba(255,107,0,0.15);border-radius:16px;background:rgba(255,107,0,0.04);}
+    .mini-box strong{display:block;font-size:22px;color:var(--vande-gold);margin-bottom:4px;}
+    .mini-box span{display:block;font-size:12px;color:var(--vande-muted);line-height:1.5;}
+    .mini-list{display:grid;gap:10px;}
+    .mini-item{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border:1px solid var(--vande-line);border-radius:14px;padding:12px 14px;background:#0A162D;
+      font-size:13px;color:#E2E8F0;
+    }
+    .mini-item b{color:var(--vande-orange-bright);}
+
+    /* Section Headings */
+    .section-head{text-align:center;margin-bottom:54px;}
+    .section-head .mini-title{
+      display:inline-block;padding:6px 16px;border-radius:999px;background:rgba(255,107,0,0.12);
+      color:var(--vande-gold);font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;
+      border:1px solid rgba(255,107,0,0.25);
+    }
+    .section-head h2{font-size:40px;line-height:1.2;color:#FFF;margin-bottom:14px;font-weight:800;}
+    .section-head p{max-width:760px;margin:auto;color:var(--vande-muted);line-height:1.8;font-size:15px;}
+
+    /* Grids */
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;}
+
+    /* Cards */
+    .card{
+      background: var(--vande-card);
+      border: 1px solid var(--vande-card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--vande-shadow);
+      transition: .3s ease;
+      height: 100%;
+      backdrop-filter: blur(12px);
+    }
+    .card:hover{transform:translateY(-6px);border-color:var(--vande-orange);box-shadow:0 20px 45px rgba(255,107,0,0.2);}
+    .card-icon{
+      width:58px;height:58px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+      background:rgba(255,107,0,0.12);color:var(--vande-orange-bright);font-size:26px;margin-bottom:18px;
+      border:1px solid rgba(255,107,0,0.3);
+    }
+    .card h3{font-size:20px;color:#FFF;margin-bottom:10px;font-weight:800;}
+    .card p{color:var(--vande-muted);font-size:14px;line-height:1.8;margin-bottom:18px;}
+    .card a{color:var(--vande-orange-bright);font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:4px;}
+    .card a:hover{color:var(--vande-gold);}
+
+    /* Notices & Policies */
+    .notice-wrap{display:grid;grid-template-columns:1fr .95fr;gap:28px;align-items:start;}
+    .notice-panel,.policy-panel{
+      background:var(--vande-card);border:1px solid var(--vande-card-border);border-radius:26px;padding:28px;box-shadow:var(--vande-shadow);
+    }
+    .notice-panel h3,.policy-panel h3{font-size:22px;color:#FFF;margin-bottom:18px;font-weight:800;}
+    .notice-list{display:grid;gap:14px;}
+    .notice-item{
+      display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:18px;background:#050E1F;border:1px solid var(--vande-line);
+    }
+    .notice-date{
+      min-width:68px;text-align:center;border-radius:14px;
+      background: linear-gradient(135deg, var(--vande-orange), #C84600);
+      color:#FFF;padding:10px 8px;box-shadow:0 6px 16px var(--vande-orange-glow);
+    }
+    .notice-date strong{display:block;font-size:20px;line-height:1;font-weight:800;}
+    .notice-date span{display:block;font-size:11px;margin-top:4px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;}
+    .notice-content h4{font-size:15px;color:#FFF;margin-bottom:4px;font-weight:700;}
+    .notice-content p{font-size:13px;color:var(--vande-muted);line-height:1.6;}
+    .policy-list{display:grid;gap:12px;}
+    .policy-item{padding:14px 16px;border-radius:14px;background:#050E1F;border:1px solid var(--vande-line);color:#E2E8F0;font-size:13.5px;line-height:1.7;}
+
+    /* Infrastructure Gallery */
+    .gallery-card{padding:0;overflow:hidden;}
+    .gallery-media{height:220px;overflow:hidden;position:relative;}
+    .gallery-media img{width:100%;height:100%;object-fit:cover;transition:.4s ease;}
+    .gallery-card:hover .gallery-media img{transform:scale(1.08);}
+    .gallery-body{padding:20px;}
+    .gallery-body h3{font-size:18px;color:#FFF;margin-bottom:6px;font-weight:800;}
+    .gallery-body p{font-size:13px;color:var(--vande-muted);line-height:1.7;}
+
+    /* About Section */
+    .about-panel{
+      background:var(--vande-card);border:1px solid var(--vande-card-border);border-radius:28px;padding:32px;box-shadow:var(--vande-shadow);
+    }
+    .about-panel h3{font-size:32px;color:#FFF;margin-bottom:16px;font-weight:800;}
+    .about-panel p{font-size:15px;color:var(--vande-muted);line-height:1.8;margin-bottom:14px;}
+    .about-highlights{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+    .about-item{padding:18px;background:#050E1F;border:1px solid var(--vande-line);border-radius:18px;}
+    .about-item h4{color:var(--vande-gold);font-size:16px;margin-bottom:6px;font-weight:800;}
+    .about-item p{margin:0;font-size:13px;line-height:1.7;color:var(--vande-muted);}
+
+    /* Authorities */
+    .authority-card{text-align:center;}
+    .avatar{
+      width:80px;height:86px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+      background:linear-gradient(135deg,rgba(255,107,0,0.2),rgba(255,184,0,0.1));color:var(--vande-orange-bright);
+      font-size:26px;font-weight:800;border:3px solid var(--vande-orange);box-shadow:0 8px 20px var(--vande-orange-glow);
+    }
+    .authority-card .role{display:inline-block;padding:5px 12px;border-radius:999px;background:rgba(255,107,0,0.12);color:var(--vande-gold);font-size:12px;font-weight:700;margin-bottom:10px;}
+
+    /* Safety & Verification Section (Replacing Public Admin/Gate Links) */
+    .safety-card{
+      background:#050E1F;border:1px solid var(--vande-card-border);border-radius:20px;padding:24px;
+    }
+    .safety-card h4{color:var(--vande-gold);font-size:18px;font-weight:800;margin-bottom:8px;}
+    .safety-card p{font-size:13.5px;color:var(--vande-muted);line-height:1.7;margin:0;}
+
+    /* Rules */
+    .rule-box{
+      background:var(--vande-card);border:1px solid var(--vande-card-border);border-radius:22px;padding:26px;color:#FFF;
+      box-shadow:var(--vande-shadow);
+    }
+    .rule-box h3{font-size:20px;margin-bottom:10px;font-weight:800;color:var(--vande-gold);}
+    .rule-box p{font-size:14px;line-height:1.8;color:var(--vande-muted);}
+
+    /* CTA Box */
+    .cta-box{
+      border-radius:30px;padding:48px;
+      background: linear-gradient(135deg, #07142A 0%, #17335C 50%, #C84600 100%);
+      border: 1px solid var(--vande-orange);
+      box-shadow: var(--vande-shadow-lg);text-align:center;color:#FFF;
+    }
+    .cta-box h2{font-size:36px;margin-bottom:12px;font-weight:800;}
+    .cta-box p{max-width:760px;margin:0 auto 26px;color:#E2E8F0;line-height:1.8;}
+    .cta-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;}
+
+    /* Contact Section */
+    .contact-layout{display:grid;grid-template-columns:.92fr 1.08fr;gap:28px;align-items:start;}
+    .contact-stack{display:grid;gap:18px;}
+    .contact-card{background:var(--vande-card);border:1px solid var(--vande-card-border);border-radius:22px;padding:24px;box-shadow:var(--vande-shadow);}
+    .contact-card h3{font-size:18px;color:#FFF;margin:10px 0 6px;font-weight:800;}
+    .contact-card p{font-size:14px;color:var(--vande-muted);line-height:1.7;}
+    .contact-form{background:var(--vande-card);border:1px solid var(--vande-card-border);border-radius:28px;padding:30px;box-shadow:var(--vande-shadow);}
+    .contact-form h3{font-size:26px;color:#FFF;margin-bottom:6px;font-weight:800;}
+    .contact-form .sub{font-size:14px;color:var(--vande-muted);line-height:1.7;margin-bottom:22px;}
+    .form-row{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+    .field{margin-bottom:18px;}
+    .field label{display:block;font-size:13px;font-weight:700;color:var(--vande-gold);margin-bottom:8px;}
+    .field input,.field textarea{
+      width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);outline:none;
+      background:#050D1E;color:#FFF;transition:.25s ease;
+    }
+    .field input:focus,.field textarea:focus{border-color:var(--vande-orange);box-shadow:0 0 0 3px var(--vande-orange-glow);background:#071328;}
+    .field textarea{min-height:150px;resize:vertical;}
+
+    /* Footer */
+    .footer{background:#02050E;color:#94A3B8;padding:60px 0 24px;border-top:1px solid var(--vande-line);}
+    .footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:28px;margin-bottom:30px;}
+    .footer h4{color:#FFF;font-size:17px;margin-bottom:14px;font-weight:800;}
+    .footer p,.footer li,.footer a{font-size:13.5px;line-height:1.8;color:#94A3B8;}
+    .footer ul{list-style:none;display:grid;gap:6px;}
+    .footer a:hover{color:var(--vande-orange-bright);}
+    .footer-bottom{padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);text-align:center;font-size:13px;color:#64748B;}
+
+    /* SECRET STAFF MODAL (IDEA 3) */
+    .staff-modal-overlay{
+      position:fixed;inset:0;background:rgba(2,6,16,0.88);backdrop-filter:blur(12px);
+      display:flex;align-items:center;justify-content:center;z-index:9999;
+      opacity:0;visibility:hidden;transition:.25s ease;padding:20px;
+    }
+    .staff-modal-overlay.show{opacity:1;visibility:visible;}
+
+    .staff-modal-box{
+      width:100%;max-width:440px;background:#071328;border:1px solid var(--vande-orange);
+      border-radius:26px;padding:32px 26px;text-align:center;box-shadow:var(--vande-shadow-lg);
+      position:relative;animation:popIn .3s ease;
+    }
+    @keyframes popIn{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+    .staff-modal-close{
+      position:absolute;top:16px;right:18px;border:none;background:rgba(255,255,255,0.1);
+      color:#FFF;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;
+    }
+    .staff-modal-icon{
+      width:60px;height:60px;border-radius:18px;background:rgba(255,107,0,0.15);
+      border:1px solid var(--vande-orange);color:var(--vande-gold);font-size:28px;
+      display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+      box-shadow:0 8px 20px var(--vande-orange-glow);
+    }
+    .staff-modal-box h3{font-size:22px;color:#FFF;font-weight:800;margin-bottom:6px;}
+    .staff-modal-box p{font-size:13px;color:var(--vande-muted);margin-bottom:20px;}
+
+    .staff-modal-btns{display:grid;gap:12px;}
+    .staff-modal-btn{
+      padding:14px;border-radius:14px;font-weight:800;font-size:14px;
+      border:none;cursor:pointer;transition:.2s ease;
+    }
+    .staff-modal-btn.admin-btn{
+      background:linear-gradient(135deg,var(--vande-orange),#C84600);color:#FFF;
+      box-shadow:0 8px 20px var(--vande-orange-glow);
+    }
+    .staff-modal-btn.gate-btn{
+      background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#E2E8F0;
+    }
+    .staff-modal-btn.gate-btn:hover{background:rgba(255,255,255,0.15);color:#FFF;}
+
+    /* Toast */
+    .toast{
+      position:fixed;right:20px;bottom:20px;z-index:1200;min-width:280px;max-width:380px;
+      background:#09152A;color:#FFF;border:1px solid var(--vande-card-border);border-left:5px solid var(--vande-orange);
+      border-radius:16px;box-shadow:var(--vande-shadow-lg);padding:16px 18px;transform:translateY(20px);opacity:0;pointer-events:none;
+      transition:.25s ease;font-weight:700;font-size:14px;
+    }
+    .toast.show{transform:translateY(0);opacity:1;pointer-events:auto;}
+    .toast.error{border-left-color:#EF4444;}
+
+    /* CHATBOT */
+    .chatbot-toggle{
+      position:fixed;right:20px;bottom:20px;width:64px;height:66px;border:none;border-radius:20px;
+      background:linear-gradient(135deg,var(--vande-orange),#C84600);color:#FFF;font-size:26px;
+      cursor:pointer;box-shadow:0 14px 35px var(--vande-orange-glow);z-index:2200;
+      display:flex;align-items:center;justify-content:center;transition:.25s ease;
+    }
+    .chatbot-toggle:hover{transform:scale(1.05);}
+
+    .chatbot-box{
+      position:fixed;right:20px;bottom:94px;width:390px;max-width:calc(100vw - 24px);height:580px;
+      background:#071226;border:1px solid var(--vande-card-border);border-radius:24px;
+      box-shadow:var(--vande-shadow-lg);overflow:hidden;z-index:2200;display:none;flex-direction:column;
+    }
+    .chatbot-box.show{display:flex;}
+    .chatbot-box.minimized{height:76px;}
+
+    .chatbot-header{
+      background:linear-gradient(135deg,#030914,#0B192E 50%,#C84600);color:#FFF;
+      padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid rgba(255,107,0,0.2);
+    }
+    .chatbot-head-left{display:flex;align-items:center;gap:12px;min-width:0;}
+    .chatbot-avatar{
+      width:42px;height:42px;border-radius:12px;background:rgba(255,107,0,0.2);
+      display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid var(--vande-orange);
+    }
+    .chatbot-title-wrap{min-width:0;}
+    .chatbot-header h3{margin:0;font-size:16px;font-weight:800;color:#FFF;}
+    .chatbot-header p{margin:2px 0 0;font-size:11.5px;color:var(--vande-gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .chatbot-head-actions{display:flex;gap:6px;flex-shrink:0;}
+    .chatbot-head-btn{
+      border:none;background:rgba(255,255,255,0.1);color:#FFF;width:32px;height:32px;border-radius:10px;
+      cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;
+    }
+
+    .chatbot-body{
+      flex:1;padding:14px;background:#030814;overflow-y:auto;display:flex;flex-direction:column;gap:12px;
+    }
+    .welcome-card{
+      background:linear-gradient(135deg,#09182d,#12335e);color:#FFF;border-radius:18px;padding:16px;
+      border:1px solid rgba(255,107,0,0.25);box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    }
+    .welcome-card h4{font-size:16px;margin-bottom:6px;color:var(--vande-gold);font-weight:800;}
+    .welcome-card p{font-size:12.5px;line-height:1.6;color:#E2E8F0;}
+
+    .quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px;}
+    .quick-card{
+      background:#071328;border:1px solid var(--vande-line);border-radius:14px;padding:10px;
+      cursor:pointer;transition:.2s ease;text-align:left;
+    }
+    .quick-card:hover{border-color:var(--vande-orange);background:#0B1C38;}
+    .quick-card strong{display:block;font-size:12px;color:var(--vande-gold);margin-bottom:2px;}
+    .quick-card span{display:block;font-size:10.5px;color:var(--vande-muted);line-height:1.4;}
+
+    .chat-row{display:flex;gap:8px;align-items:flex-end;}
+    .chat-row.user{justify-content:flex-end;}
+    .bubble-avatar{
+      width:30px;height:30px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;
+      justify-content:center;font-size:13px;background:rgba(255,107,0,0.15);color:var(--vande-orange-bright);
+      border:1px solid rgba(255,107,0,0.3);
+    }
+    .chat-row.user .bubble-avatar{order:2;background:#1E3A5F;color:#FFF;border-color:rgba(255,255,255,0.2);}
+
+    .chat-bubble-wrap{max-width:82%;}
+    .chat-msg{
+      padding:11px 13px;border-radius:16px;font-size:13.5px;line-height:1.6;
+      white-space:pre-line;word-break:break-word;
+    }
+    .bot-msg{background:#0A192F;color:#F1F5F9;border:1px solid var(--vande-card-border);border-top-left-radius:4px;}
+    .user-msg{background:linear-gradient(135deg,var(--vande-orange),#C84600);color:#FFF;border-top-right-radius:4px;}
+    .msg-time{margin-top:4px;font-size:10.5px;color:#64748B;padding:0 4px;}
+    .chat-row.user .msg-time{text-align:right;}
+
+    .chatbot-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+    .chatbot-links a{
+      display:inline-block;padding:6px 10px;border-radius:8px;background:rgba(255,107,0,0.15);
+      color:var(--vande-gold);font-size:11.5px;font-weight:700;text-decoration:none;border:1px solid rgba(255,107,0,0.3);
+    }
+
+    .typing-wrap{display:flex;align-items:center;gap:8px;}
+    .typing-box{
+      background:#0A192F;border:1px solid var(--vande-card-border);border-radius:16px;
+      border-top-left-radius:4px;padding:10px 12px;display:inline-flex;gap:5px;align-items:center;
+    }
+    .typing-dot{width:7px;height:7px;border-radius:50%;background:var(--vande-orange);animation:typingBounce 1s infinite ease-in-out;}
+    .typing-dot:nth-child(2){animation-delay:.15s;}
+    .typing-dot:nth-child(3){animation-delay:.3s;}
+    @keyframes typingBounce{0%,80%,100%{transform:translateY(0);opacity:.4;}40%{transform:translateY(-5px);opacity:1;}}
+
+    .chatbot-footer{background:#071226;border-top:1px solid var(--vande-line);}
+    .chatbot-suggestions{padding:8px 12px 0;display:flex;flex-wrap:wrap;gap:6px;}
+    .suggestion-btn{
+      border:1px solid rgba(255,107,0,0.25);background:#050D1E;color:var(--vande-gold);
+      font-size:11px;padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:600;
+    }
+
+    .chatbot-input-wrap{display:flex;gap:8px;padding:12px;align-items:center;}
+    .chatbot-input{
+      flex:1;border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:11px 13px;
+      outline:none;font-size:13.5px;background:#030814;color:#FFF;
+    }
+    .chatbot-input:focus{border-color:var(--vande-orange);box-shadow:0 0 0 3px var(--vande-orange-glow);}
+    .chatbot-send{
+      border:none;background:linear-gradient(135deg,var(--vande-orange),#C84600);color:#FFF;
+      border-radius:14px;padding:10px 14px;cursor:pointer;font-weight:700;
+    }
+
+    @media (max-width:1100px){
+      .hero-grid,.notice-wrap,.contact-layout,.grid-2,.footer-grid{grid-template-columns:1fr;}
+      .grid-4{grid-template-columns:repeat(2,1fr);}
+      .grid-3{grid-template-columns:repeat(2,1fr);}
+      .hero h1{font-size:42px;}
+      .hero-stats{grid-template-columns:repeat(2,1fr);}
+    }
+
+    @media (max-width:860px){
+      .menu-toggle{display:inline-flex;align-items:center;justify-content:center;}
+      .nav-links{
+        position:absolute;left:16px;right:16px;top:100%;background:#071226;border:1px solid var(--vande-card-border);
+        border-radius:20px;box-shadow:var(--vande-shadow-lg);padding:18px;display:none;flex-direction:column;align-items:flex-start;gap:14px;
+      }
+      .nav-links.show{display:flex;}
+      .nav-actions .btn{display:none;}
+      .section-head h2{font-size:32px;}
+      .hero h1{font-size:36px;}
+      .form-row,.about-highlights,.dashboard-row{grid-template-columns:1fr;}
+    }
+
+    @media (max-width:640px){
+      .container{width:min(1280px, calc(100% - 24px));}
+      .hero-stats,.grid-4,.grid-3{grid-template-columns:1fr;}
+      .hero-btns,.cta-actions{flex-direction:column;}
+      .btn{width:100%;}
+      .cta-box{padding:28px 20px;}
+      .hero h1{font-size:30px;}
+      .hero-card,.contact-form,.notice-panel,.policy-panel,.about-panel{padding:20px;}
+      .chatbot-box{right:12px;bottom:84px;width:calc(100vw - 24px);height:70vh;}
+      .chatbot-toggle{right:12px;bottom:12px;width:56px;height:56px;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="container topbar-wrap">
+      <div class="topbar-left">
+        <span class="topbar-flag">HOSTEL PORTAL</span>
+        <span><strong>Official Helpdesk:</strong> +91 8858826519</span>
+        <span><strong>Email:</strong> abhidwi8858826519@gmail.com</span>
+      </div>
+      <div class="topbar-right">
+        <span><strong>Portal Hours:</strong> 24/7 Digital Access</span>
+        <span><strong>Location:</strong> BBD University, Lucknow</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="header">
+    <div class="container nav">
+      <div class="brand" id="brandLogo" title="Triple-click for Staff Access">
+        <div class="brand-badge">
+          <img src="logo.png" alt="Smart Entry Logo">
+        </div>
+        <div class="brand-text">
+          <small>Grassroots Innovation Movement</small>
+          <span>Smart Entry Portal</span>
+        </div>
+      </div>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#why-us">Why Us</a>
+        <a href="#safety">Safety Standards</a>
+        <a href="#infrastructure">Infrastructure</a>
+        <a href="#about">About</a>
+        <a href="#notices">Notices</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="Student  Registration.html" class="btn btn-vande">Student Registration</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">DIGITALISED HOSTEL MOVEMENT</div>
+        <h1>Grassroots Digital Innovation for Modern Hostel Entry & Safety</h1>
+        <p>
+          A next-generation institutional portal for digital student onboarding, approved outpass workflows, real-time gate verification, transparent administration, and automated fine monitoring.
+        </p>
+
+        <div class="hero-btns">
+          <a href="Student  Registration.html" class="btn btn-vande">Student Registration</a>
+          <a href="Entry Form.html" class="btn btn-outline-vande">Student Portal</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <h3>1200+</h3>
+            <p>Students Managed</p>
+          </div>
+          <div class="hero-stat">
+            <h3>24/7</h3>
+            <p>Real-Time Security</p>
+          </div>
+          <div class="hero-stat">
+            <h3>4 Roles</h3>
+            <p>Integrated Workflows</p>
+          </div>
+          <div class="hero-stat">
+            <h3>100%</h3>
+            <p>Digital Governance</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-card-top">
+          <h3>Live Movement Hub</h3>
+          <span class="live-badge">SYSTEM ACTIVE</span>
+        </div>
+
+        <div class="dashboard-preview">
+          <div class="dashboard-row">
+            <div class="mini-box">
+              <strong>Digital</strong>
+              <span>Online onboarding & profile verification</span>
+            </div>
+            <div class="mini-box">
+              <strong>Controlled</strong>
+              <span>Gate verification & code matching</span>
+            </div>
+          </div>
+          <div class="dashboard-row">
+            <div class="mini-box">
+              <strong>Smart</strong>
+              <span>Outpass & Home Pass approvals</span>
+            </div>
+            <div class="mini-box">
+              <strong>Transparent</strong>
+              <span>Admin ledger & automated fine tracking</span>
+            </div>
+          </div>
+          <div class="mini-list">
+            <div class="mini-item"><span>Student Registration</span><b>ACTIVE</b></div>
+            <div class="mini-item"><span>Outpass / Home Pass</span><b>READY</b></div>
+            <div class="mini-item"><span>Gate Verification Desk</span><b>SECURE</b></div>
+            <div class="mini-item"><span>Admin Analytics</span><b>ENABLED</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Digital Services Section -->
+  <section class="section section-dark" id="services">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">Digital Service Modules</div>
+        <h2>Official Portal Modules</h2>
+        <p>
+          Empowering hostel residents and parents with specialized digital modules built for speed, safety, and accountability.
+        </p>
+      </div>
+
+      <div class="grid-2" style="max-width: 800px; margin: 0 auto;">
+        <div class="card">
+          <div class="card-icon">🧾</div>
+          <h3>Student Registration</h3>
+          <p>Register online with student profiles, guardian information, room allocations, photo capture, and verification documents.</p>
+          <a href="Student  Registration.html">Open Registration →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🎓</div>
+          <h3>Student Services</h3>
+          <p>Request outpasses, home passes, check return code details, track approval status, and view personal fine ledger.</p>
+          <a href="Entry Form.html">Open Student Portal →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Safety & Verification Section (Replacing Public Admin/Gate Links) -->
+  <section class="section section-surface" id="safety">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">24/7 Monitored Safety</div>
+        <h2>Residential Security & Governance Standards</h2>
+        <p>
+          Our portal enforces strict digital protocols to ensure 100% safety, parent awareness, and controlled movement.
+        </p>
+      </div>
+
+      <div class="grid-4">
+        <div class="safety-card">
+          <h4>📍 Geofenced Movement</h4>
+          <p>Student requests capture GPS coordinates to prevent false entries and verify exact location at submission.</p>
+        </div>
+        <div class="safety-card">
+          <h4>📲 Parent Alert System</h4>
+          <p>Home Pass submissions require verified guardian phone numbers for direct SMS and call verification.</p>
+        </div>
+        <div class="safety-card">
+          <h4>🔑 Digital Gate Code</h4>
+          <p>Re-entry requires producing a unique digital return code at the gate desk to prevent unauthorized entry.</p>
+        </div>
+        <div class="safety-card">
+          <h4>⚖️ Automated Discipline</h4>
+          <p>Late arrivals beyond permitted hours are logged automatically in the fine ledger for warden review.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="section section-dark" id="why-us">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">Pillars of Governance</div>
+        <h2>Built for Modern Institutional Excellence</h2>
+        <p>
+          Driven by the spirit of grassroots innovation, our portal brings structure, transparency, and high security to campus residential management.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">🔐</div>
+          <h3>Grassroots Security</h3>
+          <p>Approval-based movement logs and return verification keep every student accountable and protected.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>Centralized Command</h3>
+          <p>Students, wardens, gate security, and admins operate within one connected cloud ecosystem.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📌</div>
+          <h3>Transparent Workflows</h3>
+          <p>Every pass request, timestamp, verification step, and fine transaction is permanently logged.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <h3>Real-Time Analytics</h3>
+          <p>Interactive trends, movement charts, and live outside counts provide instant operational clarity.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">💬</div>
+          <h3>Digital Student Support</h3>
+          <p>Integrated AI Assistant answers questions instantly regarding outpass, home pass, and hostel guidelines.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏛️</div>
+          <h3>Institutional Prestige</h3>
+          <p>Designed to present an official, sleek organizational presence matching modern top-tier institutions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Campus Infrastructure -->
+  <section class="section section-surface" id="infrastructure">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">Campus Infrastructure</div>
+        <h2>Residential Environment & Premises</h2>
+        <p>
+          Explore the clean, structured, and modern residential facilities supporting BBD University students.
+        </p>
+      </div>
+
+      <div class="grid-4">
+        <div class="card gallery-card">
+          <div class="gallery-media"><img src="HOSTEL1.jpeg" alt="Hostel Building"></div>
+          <div class="gallery-body">
+            <h3>Hostel Building</h3>
+            <p>Structured residential blocks with secure entry access points.</p>
+          </div>
+        </div>
+        <div class="card gallery-card">
+          <div class="gallery-media"><img src="HOSTEL2.jpeg" alt="Rooms and Facilities"></div>
+          <div class="gallery-body">
+            <h3>Rooms & Corridors</h3>
+            <p>Well-maintained rooms built for student study and comfort.</p>
+          </div>
+        </div>
+        <div class="card gallery-card">
+          <div class="gallery-media"><img src="HOSTEL10.jpeg" alt="Sports Area"></div>
+          <div class="gallery-body">
+            <h3>Sports & Recreation</h3>
+            <p>Courts and open grounds encouraging physical fitness and sports.</p>
+          </div>
+        </div>
+        <div class="card gallery-card">
+          <div class="gallery-media"><img src="HOSTEL5.jpeg" alt="Exterior Campus View"></div>
+          <div class="gallery-body">
+            <h3>Exterior Campus Grounds</h3>
+            <p>Spacious, green campus environment providing peace of mind.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section section-dark" id="about">
+    <div class="container grid-2">
+      <div class="about-panel">
+        <h3>Grassroots Innovation in Hostel Administration</h3>
+        <p>
+          The Smart Entry Portal was conceived to replace traditional paper registers with a modern, secure, and digital movement management framework.
+        </p>
+        <p>
+          By connecting student requests, warden approvals, gate verification, and administrative monitoring in real time, the platform minimizes delays and prevents unauthorized movement.
+        </p>
+        <p>
+          Aligned with the Vande Bharatam vision of self-reliance and technological empowerment, it sets a benchmark for digital campus governance.
+        </p>
+      </div>
+
+      <div class="about-highlights">
+        <div class="about-item">
+          <h4>Our Mission</h4>
+          <p>To deliver safe, transparent, and seamless hostel management using modern web technology.</p>
+        </div>
+        <div class="about-item">
+          <h4>Our Vision</h4>
+          <p>To empower educational institutions across India with digital grassroots tools.</p>
+        </div>
+        <div class="about-item">
+          <h4>Student Safety First</h4>
+          <p>Geolocated submissions, guardian contact verification, and gate codes ensure resident safety.</p>
+        </div>
+        <div class="about-item">
+          <h4>Administrative Speed</h4>
+          <p>Role-based access speeds up pass approvals and reduces administrative friction.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notice Board & Policies -->
+  <section class="section section-surface" id="notices">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">Official Notice Board</div>
+        <h2>Announcements & Guidelines</h2>
+        <p>
+          Stay updated with official hostel circulars, movement timings, and discipline protocols.
+        </p>
+      </div>
+
+      <div class="notice-wrap">
+        <div class="notice-panel">
+          <h3>Recent Circulars</h3>
+          <div class="notice-list">
+            <div class="notice-item">
+              <div class="notice-date"><strong>08</strong><span>AUG</span></div>
+              <div class="notice-content">
+                <h4>Digital Student Onboarding Active</h4>
+                <p>All hostel residents must complete digital profile verification on the portal.</p>
+              </div>
+            </div>
+            <div class="notice-item">
+              <div class="notice-date"><strong>07</strong><span>AUG</span></div>
+              <div class="notice-content">
+                <h4>Mandatory Gate Return Code Policy</h4>
+                <p>Re-entry requires producing the valid return code at the gate verification desk.</p>
+              </div>
+            </div>
+            <div class="notice-item">
+              <div class="notice-date"><strong>05</strong><span>AUG</span></div>
+              <div class="notice-content">
+                <h4>Parent Contact Verification Update</h4>
+                <p>Home Pass submissions require valid guardian phone number confirmation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="policy-panel">
+          <h3>Important Hostel Guidelines</h3>
+          <div class="policy-list">
+            <div class="policy-item">✓ Outpass requests must be submitted digitally prior to departure.</div>
+            <div class="policy-item">✓ Re-entry at gate must be confirmed via return code matching.</div>
+            <div class="policy-item">✓ Late returns beyond permitted hours incur automated fine entries.</div>
+            <div class="policy-item">✓ Keep room number, guardian phone, and contact profile up to date.</div>
+            <div class="policy-item">✓ Unauthorized exit without approval leads to administrative review.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Authorities -->
+  <section class="section section-surface" id="authorities">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">Hostel Administration</div>
+        <h2>Authorities & Roles</h2>
+        <p>
+          Dedicated operational authorities responsible for hostel welfare, safety, and administration.
+        </p>
+      </div>
+
+      <div class="grid-4">
+        <div class="card authority-card">
+          <div class="avatar">CW</div>
+          <div class="role">Chief Warden</div>
+          <h3>Chief Warden Desk</h3>
+          <p>Oversees policy implementation, major approvals, and overall hostel discipline.</p>
+        </div>
+        <div class="card authority-card">
+          <div class="avatar">AW</div>
+          <div class="role">Assistant Warden</div>
+          <h3>Assistant Warden</h3>
+          <p>Manages daily outpass reviews, leave requests, and resident assistance.</p>
+        </div>
+        <div class="card authority-card">
+          <div class="avatar">AD</div>
+          <div class="role">Portal Admin</div>
+          <h3>Admin Command</h3>
+          <p>Monitors system dashboards, logs, fine collections, and database records.</p>
+        </div>
+        <div class="card authority-card">
+          <div class="avatar">GS</div>
+          <div class="role">Gate Security</div>
+          <h3>Gate Verification</h3>
+          <p>Validates exit approvals and checks student return codes at the main gate.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rules -->
+  <section class="section section-dark" id="rules">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">Rules & Discipline</div>
+        <h2>Structured Policy Framework</h2>
+        <p>
+          Clear rules for smooth hostel administration and student safety.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="rule-box">
+          <h3>Outpass Submission</h3>
+          <p>Submit request via Student Portal. Approval by Warden is mandatory prior to stepping outside the gate.</p>
+        </div>
+        <div class="rule-box">
+          <h3>Gate Return Code</h3>
+          <p>On return, state your Roll Number and Return Code to Gate Security for digital verification.</p>
+        </div>
+        <div class="rule-box">
+          <h3>Late Return Fines</h3>
+          <p>Late arrivals are flagged automatically. Unpaid fines must be cleared via Admin/Warden desk.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Box -->
+  <section class="section section-surface">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Access Digital Student Services Now</h2>
+        <p>
+          Register your student profile or submit outpass and home pass requests instantly.
+        </p>
+        <div class="cta-actions">
+          <a href="Student  Registration.html" class="btn btn-vande">Register Now</a>
+          <a href="Entry Form.html" class="btn btn-outline-vande">Student Portal</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section section-dark" id="contact">
+    <div class="container">
+      <div class="section-head">
+        <div class="mini-title">Official Support</div>
+        <h2>Contact Hostel Administration</h2>
+        <p>
+          Have questions regarding registration, outpass approvals, or portal access? Send us a direct message.
+        </p>
+      </div>
+
+      <div class="contact-layout">
+        <div class="contact-stack">
+          <div class="contact-card">
+            <div class="card-icon">📍</div>
+            <h3>Office Location</h3>
+            <p>NBH A & B Block Boys Hostel<br>BBD University<br>Lucknow, Uttar Pradesh, India</p>
+          </div>
+          <div class="contact-card">
+            <div class="card-icon">📞</div>
+            <h3>Phone Helpline</h3>
+            <p>Hostel Office: +91 8858826519<br>Warden Support: +91 8858826519</p>
+          </div>
+          <div class="contact-card">
+            <div class="card-icon">✉️</div>
+            <h3>Email Support</h3>
+            <p>abhidwi8858826519@gmail.com<br>support@smartentry.com</p>
+          </div>
+        </div>
+
+        <div class="contact-form">
+          <h3>Send a Message</h3>
+          <p class="sub">Fill out the form below for direct support from the hostel administration office.</p>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="contactFullName">Full Name</label>
+              <input type="text" id="contactFullName" placeholder="Enter your name">
+            </div>
+            <div class="field">
+              <label for="contactEmail">Email Address</label>
+              <input type="email" id="contactEmail" placeholder="Enter your email">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="contactPhone">Phone Number</label>
+              <input type="text" id="contactPhone" placeholder="Enter your phone">
+            </div>
+            <div class="field">
+              <label for="contactSubject">Subject</label>
+              <input type="text" id="contactSubject" placeholder="Enter subject">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="contactMessage">Your Message</label>
+            <textarea id="contactMessage" placeholder="Write your message here..."></textarea>
+          </div>
+
+          <button type="button" class="btn btn-vande" id="submitBtn" onclick="submitContactForm()">Send Message</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:14px;">
+            <div class="brand-badge"><img src="logo.png" alt="Smart Entry Logo"></div>
+            <div class="brand-text">
+              <small>Grassroots Innovation</small>
+              <span>Smart Entry Portal</span>
+            </div>
+          </div>
+          <p>Digital hostel registration, student outpass workflows, real-time gate verification, and transparent administration platform.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#safety">Safety Standards</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Student Modules</h4>
+          <ul>
+            <li><a href="Student  Registration.html">Student Registration</a></li>
+            <li><a href="Entry Form.html">Student Request Portal</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact & Location</h4>
+          <ul>
+            <li>BBD University, Lucknow</li>
+            <li>+91 8858826519</li>
+            <li>abhidwi8858826519@gmail.com</li>
+            <li>24/7 Digital Support</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Smart Entry Portal * DIGITALISED HOSTEL MANGEMENT * ALL RIGHTS RESERVED
+      </div>
+    </div>
+  </footer>
+
+  <!-- SECRET STAFF MODAL (IDEA 3) -->
+  <div class="staff-modal-overlay" id="staffAccessModal">
+    <div class="staff-modal-box">
+      <button class="staff-modal-close" onclick="closeStaffModal()">✕</button>
+      <div class="staff-modal-icon">🔐</div>
+      <h3>Authorized Staff Access</h3>
+      <p>Select staff portal module to proceed to secure login.</p>
+
+      <div class="staff-modal-btns">
+        <button class="staff-modal-btn admin-btn" onclick="openStaffPanel('Admin.html')">Open Admin & Warden Panel</button>
+        <button class="staff-modal-btn gate-btn" onclick="openStaffPanel('Gate.html')">Open Gate Verification Desk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Chatbot Floating Button -->
+  <button class="chatbot-toggle" id="chatbotToggle" title="Open AI Assistant">💬</button>
+
+  <!-- Chatbot Window -->
+  <div class="chatbot-box" id="chatbotBox">
+    <div class="chatbot-header">
+      <div class="chatbot-head-left">
+        <div class="chatbot-avatar">🤖</div>
+        <div class="chatbot-title-wrap">
+          <h3>Smart Entry Assistant</h3>
+          <p>Vande Bharatam Digital Helper</p>
+        </div>
+      </div>
+      <div class="chatbot-head-actions">
+        <button class="chatbot-head-btn" id="chatbotMinimize" title="Minimize">–</button>
+        <button class="chatbot-head-btn" id="chatbotClose" title="Close">✕</button>
+      </div>
+    </div>
+
+    <div class="chatbot-body" id="chatbotBody">
+      <div class="welcome-card">
+        <h4>Welcome to Smart Entry Assistant</h4>
+        <p>
+          I can guide you through student registration, outpass requests, home pass rules, gate code verification, and fines.
+        </p>
+      </div>
+
+      <div class="quick-grid">
+        <button class="quick-card" onclick="sendSuggestion('How to apply outpass?')">
+          <strong>Apply Outpass</strong>
+          <span>Digital outpass guidance</span>
+        </button>
+        <button class="quick-card" onclick="sendSuggestion('How to apply home pass?')">
+          <strong>Home Pass</strong>
+          <span>Leave request process</span>
+        </button>
+        <button class="quick-card" onclick="sendSuggestion('Fine rules explain')">
+          <strong>Fine Rules</strong>
+          <span>Understand late penalties</span>
+        </button>
+        <button class="quick-card" onclick="sendSuggestion('Gate verification kya hai?')">
+          <strong>Gate Desk</strong>
+          <span>Return code verification</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="chatbot-footer" id="chatbotFooter">
+      <div class="chatbot-suggestions">
+        <button class="suggestion-btn" onclick="sendSuggestion('How to apply outpass?')">Outpass</button>
+        <button class="suggestion-btn" onclick="sendSuggestion('How to apply home pass?')">Home Pass</button>
+        <button class="suggestion-btn" onclick="sendSuggestion('Fine rules explain')">Fine</button>
+        <button class="suggestion-btn" onclick="sendSuggestion('Gate verification kya hai?')">Gate</button>
+        <button class="suggestion-btn" onclick="sendSuggestion('Student registration link do')">Registration</button>
+      </div>
+
+      <div class="chatbot-input-wrap">
+        <input type="text" id="chatbotInput" class="chatbot-input" placeholder="Ask a question..." />
+        <button class="chatbot-send" onclick="handleChat()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzPHAnb85VNjt9C_HngDf-KXTyECCC7QlJKxvCevx4-AchwK1APRAiAsWYad7vYXfOz/exec";
+
+    // Navigation Menu
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+        menuToggle.textContent = navLinks.classList.contains('show') ? '✕' : '☰';
+      });
+    }
+
+    document.querySelectorAll('#navLinks a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('show');
+        if (menuToggle) menuToggle.textContent = '☰';
+      });
+    });
+
+    // SECRET STAFF ACCESS MODAL (IDEA 3)
+    let logoClickCount = 0;
+    let logoClickTimer = null;
+    const brandLogo = document.getElementById('brandLogo');
+
+    if (brandLogo) {
+      brandLogo.addEventListener('click', () => {
+        logoClickCount++;
+        clearTimeout(logoClickTimer);
+
+        if (logoClickCount === 3) {
+          openStaffModal();
+          logoClickCount = 0;
+        } else {
+          logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1000);
+        }
+      });
+    }
+
+    // Keyboard Shortcut (Ctrl + Shift + S)
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's' || e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        openStaffModal();
+      }
+    });
+
+    function openStaffModal() {
+      document.getElementById('staffAccessModal').classList.add('show');
+      showToast('Staff Access Triggered', 'info');
+    }
+
+    function closeStaffModal() {
+      document.getElementById('staffAccessModal').classList.remove('show');
+    }
+
+    function openStaffPanel(targetUrl) {
+      closeStaffModal();
+      window.location.href = targetUrl;
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.className = 'toast';
+      }, 3000);
+    }
+
+    async function submitContactForm() {
+      const fullName = document.getElementById('contactFullName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const phone = document.getElementById('contactPhone').value.trim();
+      const subject = document.getElementById('contactSubject').value.trim();
+      const message = document.getElementById('contactMessage').value.trim();
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (!fullName || !email || !phone || !subject || !message) {
+        showToast('Please fill all fields.', 'error');
+        return;
+      }
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        showToast('Please enter a valid email address.', 'error');
+        return;
+      }
+
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'submitContactForm',
+            fullName, email, phone, subject, message
+          }),
+          redirect: 'follow'
+        });
+
+        const raw = await response.text();
+        let data;
+        try { data = JSON.parse(raw); } catch (err) {
+          showToast('Response parsing error.', 'error');
+          return;
+        }
+
+        if (data.ok) {
+          showToast(data.message || 'Message submitted successfully.');
+          document.getElementById('contactFullName').value = '';
+          document.getElementById('contactEmail').value = '';
+          document.getElementById('contactPhone').value = '';
+          document.getElementById('contactSubject').value = '';
+          document.getElementById('contactMessage').value = '';
+        } else {
+          showToast(data.message || 'Submission failed.', 'error');
+        }
+      } catch (error) {
+        showToast('Network error. Check connection.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+
+    // Chatbot Logic
+    const chatbotToggle = document.getElementById("chatbotToggle");
+    const chatbotBox = document.getElementById("chatbotBox");
+    const chatbotClose = document.getElementById("chatbotClose");
+    const chatbotMinimize = document.getElementById("chatbotMinimize");
+    const chatbotBody = document.getElementById("chatbotBody");
+    const chatbotInput = document.getElementById("chatbotInput");
+
+    chatbotToggle.addEventListener("click", () => {
+      chatbotBox.classList.toggle("show");
+      chatbotBox.classList.remove("minimized");
+    });
+    chatbotClose.addEventListener("click", () => {
+      chatbotBox.classList.remove("show");
+      chatbotBox.classList.remove("minimized");
+    });
+    chatbotMinimize.addEventListener("click", () => {
+      chatbotBox.classList.toggle("minimized");
+    });
+    chatbotInput.addEventListener("keypress", function(e){
+      if(e.key === "Enter") handleChat();
+    });
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function addChatMessage(text, type = "bot", links = []) {
+      const row = document.createElement("div");
+      row.className = `chat-row ${type === "user" ? "user" : ""}`;
+
+      const avatar = document.createElement("div");
+      avatar.className = "bubble-avatar";
+      avatar.textContent = type === "user" ? "👤" : "🤖";
+
+      const wrap = document.createElement("div");
+      wrap.className = "chat-bubble-wrap";
+
+      const msg = document.createElement("div");
+      msg.className = `chat-msg ${type === "user" ? "user-msg" : "bot-msg"}`;
+      msg.innerHTML = text;
+
+      if (links.length > 0) {
+        const linksWrap = document.createElement("div");
+        linksWrap.className = "chatbot-links";
+        links.forEach(link => {
+          const a = document.createElement("a");
+          a.href = link.href;
+          a.textContent = link.label;
+          linksWrap.appendChild(a);
+        });
+        msg.appendChild(linksWrap);
+      }
+
+      const time = document.createElement("div");
+      time.className = "msg-time";
+      time.textContent = getCurrentTime();
+
+      wrap.appendChild(msg);
+      wrap.appendChild(time);
+      row.appendChild(avatar);
+      row.appendChild(wrap);
+
+      chatbotBody.appendChild(row);
+      chatbotBody.scrollTop = chatbotBody.scrollHeight;
+    }
+
+    function showTyping() {
+      const typingRow = document.createElement("div");
+      typingRow.className = "chat-row";
+      typingRow.id = "typingRow";
+
+      const avatar = document.createElement("div");
+      avatar.className = "bubble-avatar";
+      avatar.textContent = "🤖";
+
+      const wrap = document.createElement("div");
+      wrap.innerHTML = `<div class="typing-box"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+
+      typingRow.appendChild(avatar);
+      typingRow.appendChild(wrap);
+      chatbotBody.appendChild(typingRow);
+      chatbotBody.scrollTop = chatbotBody.scrollHeight;
+    }
+
+    function removeTyping() {
+      const typingRow = document.getElementById("typingRow");
+      if (typingRow) typingRow.remove();
+    }
+
+    function sendSuggestion(text) {
+      chatbotBox.classList.add("show");
+      chatbotBox.classList.remove("minimized");
+      chatbotInput.value = text;
+      handleChat();
+    }
+
+    function handleChat() {
+      const userText = chatbotInput.value.trim();
+      if (!userText) return;
+
+      addChatMessage(userText, "user");
+      chatbotInput.value = "";
+      showTyping();
+
+      setTimeout(() => {
+        removeTyping();
+        const response = getBotReply(userText.toLowerCase());
+        addChatMessage(response.text, "bot", response.links || []);
+      }, 650);
+    }
+
+    function getBotReply(message) {
+      const hasAny = (...words) => words.some(word => message.includes(word));
+
+      if (hasAny("outpass", "out pass", "leave for outing", "exit pass")) {
+        return {
+          text: `**Outpass Guidance**\n\n1. Open Student Portal\n2. Choose Outpass\n3. Fill details and submit\n4. Wait for warden approval before leaving.`,
+          links: [{ label: "Open Student Portal", href: "Entry Form.html" }]
+        };
+      }
+      if (hasAny("home pass", "homepass", "go home", "home leave")) {
+        return {
+          text: `**Home Pass Guidance**\n\n1. Open Student Portal\n2. Select Home Pass\n3. Fill leave dates, father phone & reason\n4. Submit for official approval.`,
+          links: [{ label: "Open Student Portal", href: "Entry Form.html" }]
+        };
+      }
+      if (hasAny("fine", "penalty", "late fee")) {
+        return {
+          text: `**Fine Rules**\n\nLate return or rule violation automatically incurs fines. View details in Student Portal.`,
+          links: [{ label: "Student Portal", href: "Entry Form.html" }]
+        };
+      }
+      if (hasAny("gate", "verification", "return code")) {
+        return {
+          text: `**Gate Verification**\n\nGate security checks approved exits and verifies IN entries using Return Codes at the campus gate.`,
+          links: []
+        };
+      }
+      if (hasAny("registration", "register", "new student")) {
+        return {
+          text: `**Student Registration**\n\nFill online profile, guardian info, room details, and document uploads.`,
+          links: [{ label: "Open Registration", href: "Student  Registration.html" }]
+        };
+      }
+      return {
+        text: `**How can I help you?**\n\nTry asking:\n- Outpass apply kaise kare\n- Home pass requirements\n- Gate return code verify\n- Fine clear details`
+      };
+    }
+  </script>
+</body>
+</html>

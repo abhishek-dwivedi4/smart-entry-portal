@@ -1,0 +1,756 @@
+ <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Entry Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#0f62fe;
+      --primary-dark:#0b4fd1;
+      --surface:#ffffff;
+      --line:#d9e4f5;
+      --text:#0f172a;
+      --muted:#5b6b86;
+      --shadow-sm:0 8px 22px rgba(15, 98, 254, .08);
+      --shadow-md:0 18px 40px rgba(15, 98, 254, .12);
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      min-height:100vh;
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15,98,254,.12), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(96,165,250,.12), transparent 18%),
+        linear-gradient(180deg,#f7fbff 0%,#edf4ff 52%,#f9fbff 100%);
+      overflow-x:hidden;
+      position:relative;
+    }
+
+    img{
+      max-width:100%;
+      height:auto;
+      display:block;
+    }
+
+    body::before,
+    body::after{
+      content:"";
+      position:fixed;
+      border-radius:50%;
+      pointer-events:none;
+      z-index:0;
+      filter:blur(8px);
+    }
+
+    body::before{
+      width:220px;
+      height:220px;
+      background:rgba(15,98,254,.10);
+      top:70px;
+      left:60px;
+      animation:floatBlob 8s ease-in-out infinite;
+    }
+
+    body::after{
+      width:280px;
+      height:280px;
+      background:rgba(59,130,246,.08);
+      right:50px;
+      bottom:50px;
+      animation:floatBlob 10s ease-in-out infinite;
+    }
+
+    @keyframes floatBlob{
+      0%,100%{transform:translateY(0) translateX(0)}
+      50%{transform:translateY(-14px) translateX(8px)}
+    }
+
+    .topbar,
+    .main-wrap,
+    .footer{
+      position:relative;
+      z-index:1;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      padding:16px 26px;
+      background:rgba(255,255,255,.78);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+    }
+
+    .brand-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .brand-left img{
+      width:48px;
+      height:48px;
+      object-fit:contain;
+      border-radius:14px;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+      flex-shrink:0;
+    }
+
+    .brand-left span{
+      font-size:16px;
+      font-weight:900;
+      color:#163469;
+      letter-spacing:.4px;
+      white-space:nowrap;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .reg-btn{
+      border:none;
+      padding:11px 18px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#fff;
+      font-weight:800;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 12px 26px rgba(15,98,254,.20);
+      transition:.25s ease;
+      text-align:center;
+    }
+
+    .reg-btn:hover{
+      color:#fff;
+      transform:translateY(-2px);
+    }
+
+    .main-wrap{
+      min-height:calc(100vh - 146px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px 16px;
+    }
+
+    .page-shell{
+      width:100%;
+      max-width:620px;
+      margin:0 auto;
+    }
+
+    .card-box{
+      width:100%;
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow-md);
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+      backdrop-filter:blur(12px);
+      animation:fadeUp .65s ease;
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(18px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .card-top{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .card-logo{
+      width:56px;
+      height:56px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#0f62fe,#3b82f6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 12px 24px rgba(15,98,254,.18);
+      flex-shrink:0;
+    }
+
+    .card-logo img{
+      width:34px;
+      height:34px;
+      object-fit:contain;
+    }
+
+    .card-top h2{
+      margin:0;
+      font-size:22px;
+      font-weight:1000;
+      color:#163469;
+      line-height:1.1;
+    }
+
+    .card-top p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:600;
+      line-height:1.7;
+    }
+
+    .section-label{
+      font-size:12px;
+      font-weight:900;
+      color:#4b5f85;
+      margin-bottom:5px;
+    }
+
+    .form-control,
+    .form-select{
+      border-radius:12px;
+      min-height:44px;
+      border:1px solid #d7e3f7;
+      box-shadow:none !important;
+      background:#fff;
+      transition:.25s ease;
+      font-size:14px;
+    }
+
+    .form-control:focus,
+    .form-select:focus{
+      border-color:#8bb5ff;
+      box-shadow:0 0 0 .22rem rgba(15,98,254,.10)!important;
+      transform:translateY(-1px);
+    }
+
+    .readonly{
+      background:#f3f7fe !important;
+      color:#5b6b86;
+      cursor:not-allowed;
+    }
+
+    .home-pass-box{
+      background:#f8fbff;
+      border:1px solid #dbe8fb;
+      border-radius:16px;
+      padding:12px;
+      margin-bottom:12px;
+    }
+
+    .btn-submit{
+      width:100%;
+      border:none;
+      border-radius:12px;
+      padding:12px;
+      font-weight:900;
+      color:#fff;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      transition:.25s ease;
+      box-shadow:0 14px 28px rgba(15,98,254,.20);
+      min-height:46px;
+      letter-spacing:.02em;
+    }
+
+    .btn-submit:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn-submit:disabled{
+      opacity:.88;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .status-box{
+      margin-top:2px;
+      margin-bottom:8px;
+      font-size:13px;
+      font-weight:800;
+      min-height:18px;
+      padding-left:2px;
+      word-break:break-word;
+    }
+
+    .toast-box{
+      position:absolute;
+      top:16px;
+      left:50%;
+      transform:translateX(-50%) translateY(-10px);
+      min-width:190px;
+      max-width:340px;
+      padding:10px 14px;
+      border-radius:12px;
+      color:#fff;
+      font-weight:800;
+      font-size:12px;
+      text-align:center;
+      z-index:9999;
+      opacity:0;
+      visibility:hidden;
+      box-shadow:0 12px 28px rgba(0,0,0,.18);
+      transition:all .22s ease;
+      pointer-events:none;
+    }
+
+    .toast-box.show{
+      opacity:1;
+      visibility:visible;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    .toast-box.success{ background:linear-gradient(45deg,#11998e,#38ef7d); }
+    .toast-box.error{ background:linear-gradient(45deg,#ff416c,#ff4b2b); }
+    .toast-box.info{ background:linear-gradient(45deg,#396afc,#2948ff); }
+
+    .hidden{ display:none !important; }
+
+    .mini-note{
+      font-size:12px;
+      color:#7a8aa8;
+      font-weight:700;
+      margin-top:10px;
+      text-align:center;
+      line-height:1.6;
+    }
+
+    .footer{
+      text-align:center;
+      color:#5b6b86;
+      background:rgba(255,255,255,.74);
+      backdrop-filter:blur(12px);
+      padding:12px 14px;
+      font-size:14px;
+      font-weight:700;
+      border-top:1px solid var(--line);
+    }
+
+    @media(max-width:768px){
+      .topbar{
+        padding:14px 14px;
+      }
+
+      .brand-left{
+        width:100%;
+      }
+
+      .brand-left img{
+        width:42px;
+        height:42px;
+      }
+
+      .brand-left span{
+        font-size:14px;
+      }
+
+      .top-actions{
+        width:100%;
+      }
+
+      .top-actions .reg-btn{
+        flex:1 1 100%;
+        width:100%;
+      }
+
+      .main-wrap{
+        padding:18px 12px;
+      }
+
+      .card-box{
+        padding:18px 16px;
+        border-radius:22px;
+      }
+
+      .card-top{
+        align-items:flex-start;
+      }
+
+      .card-top h2{
+        font-size:20px;
+      }
+
+      .footer{
+        font-size:12.5px;
+      }
+    }
+
+    @media(max-width:480px){
+      .topbar{
+        padding:12px;
+      }
+
+      .main-wrap{
+        padding:14px 10px;
+      }
+
+      .card-box{
+        padding:16px 14px;
+      }
+
+      .card-top{
+        flex-direction:column;
+      }
+
+      .card-top h2{
+        font-size:19px;
+      }
+
+      .toast-box{
+        max-width:calc(100% - 20px);
+        min-width:auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand-left">
+      <img src="logo.png" alt="Smart Entry Logo">
+      <span>SMART ENTRY PORTAL</span>
+    </div>
+
+    <div class="top-actions">
+      <a href="student registration.html" class="reg-btn">STUDENT REGISTRATION</a>
+      <a href="gate.html" class="reg-btn">GATE PANEL</a>
+      <a href="admin.html" class="reg-btn">ADMIN PANEL</a>
+    </div>
+  </div>
+
+  <div class="main-wrap">
+    <div class="page-shell">
+      <div class="card-box">
+        <div id="toastBox" class="toast-box"></div>
+
+        <div class="card-top">
+          <div class="card-logo">
+            <img src="logo.png" alt="Smart Entry Logo">
+          </div>
+          <div>
+            <h2>Entry Form</h2>
+            <p>Submit your request</p>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="section-label">Roll Number</label>
+          <input id="roll" class="form-control" placeholder="Enter Roll Number" autocomplete="off">
+        </div>
+
+        <div class="mb-3 status-box" id="fetchStatus"></div>
+
+        <div class="mb-3">
+          <label class="section-label">Full Name</label>
+          <input id="name" class="form-control readonly" placeholder="Full Name" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="section-label">Student Phone Number</label>
+          <input id="phone" class="form-control readonly" placeholder="Student Phone Number" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="section-label">Branch</label>
+          <input id="branch" class="form-control readonly" placeholder="Branch" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="section-label">Year</label>
+          <input id="year" class="form-control readonly" placeholder="Year" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="section-label">Hostel</label>
+          <input id="hostel" class="form-control readonly" placeholder="Hostel" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="section-label">Room Number</label>
+          <input id="room" class="form-control readonly" placeholder="Room Number" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="section-label">Request Type</label>
+          <select id="type" class="form-select">
+            <option value="">Select Type</option>
+            <option value="OUT">OUT</option>
+            <option value="IN">IN</option>
+            <option value="HOME PASS">HOME PASS</option>
+          </select>
+        </div>
+
+        <div id="homePassBox" class="home-pass-box hidden">
+          <div class="mb-3">
+            <label class="section-label">From Date</label>
+            <input id="fromDate" type="date" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="section-label">To Date</label>
+            <input id="toDate" type="date" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="section-label">Reason</label>
+            <input id="reason" class="form-control" placeholder="Enter reason">
+          </div>
+
+          <div class="mb-3">
+            <label class="section-label">Father Phone Number</label>
+            <input id="fatherPhone" class="form-control" placeholder="Enter father phone number">
+          </div>
+
+          <div class="mb-3">
+            <label class="section-label">Father Name</label>
+            <input id="fatherName" class="form-control readonly" placeholder="Father Name" readonly>
+          </div>
+        </div>
+
+        <button id="submitBtn" class="btn-submit" type="button">Submit Request</button>
+        <div class="mini-note">Geo location auto capture ke saath request submit hogi.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Smart Entry Portal • Student Request Page
+  </div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzPHAnb85VNjt9C_HngDf-KXTyECCC7QlJKxvCevx4-AchwK1APRAiAsWYad7vYXfOz/exec";
+  let currentStudent = null;
+  let currentProfile = null;
+  let currentGeo = { lat: "", lng: "" };
+
+  function showToast(message, type = "info") {
+    const box = document.getElementById("toastBox");
+    box.className = "toast-box show " + type;
+    box.textContent = message;
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => {
+      box.className = "toast-box";
+    }, 1800);
+  }
+
+  async function safeJson(r) {
+    const txt = await r.text();
+    try {
+      return JSON.parse(txt);
+    } catch (e) {
+      return { ok: false, message: "Server non-JSON response", raw: txt };
+    }
+  }
+
+  function setFetchStatus(msg = "", color = "") {
+    const el = document.getElementById("fetchStatus");
+    el.textContent = msg;
+    el.style.color = color || "";
+  }
+
+  function clearStudentFields() {
+    document.getElementById("name").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("branch").value = "";
+    document.getElementById("year").value = "";
+    document.getElementById("hostel").value = "";
+    document.getElementById("room").value = "";
+    document.getElementById("fatherName").value = "";
+    currentStudent = null;
+    currentProfile = null;
+  }
+
+  function fillStudentFields(student, profile) {
+    document.getElementById("name").value = student.name || "";
+    document.getElementById("phone").value = student.phone || "";
+    document.getElementById("branch").value = student.branch || "";
+    document.getElementById("year").value = student.year || "";
+    document.getElementById("hostel").value = student.hostel || "";
+    document.getElementById("room").value = student.room || "";
+    document.getElementById("fatherName").value = (profile && profile.fatherName) || "";
+  }
+
+  function toggleHomePass() {
+    const type = document.getElementById("type").value.trim().toUpperCase();
+    document.getElementById("homePassBox").classList.toggle("hidden", type !== "HOME PASS");
+  }
+
+  function getLocationPromise() {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) {
+        resolve({ lat: "", lng: "" });
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          resolve({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          });
+        },
+        () => resolve({ lat: "", lng: "" }),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    });
+  }
+
+  async function fetchStudentByRoll() {
+    const roll = document.getElementById("roll").value.trim();
+    if (!roll) {
+      clearStudentFields();
+      setFetchStatus("");
+      return;
+    }
+
+    try {
+      setFetchStatus("Fetching student...", "#0f62fe");
+
+      const r1 = await fetch(`${WEB_APP_URL}?action=getStudentByRoll&roll=${encodeURIComponent(roll)}`);
+      const studentRes = await safeJson(r1);
+
+      if (!studentRes.ok) {
+        clearStudentFields();
+        setFetchStatus(studentRes.message || "Student not found", "red");
+        return;
+      }
+
+      currentStudent = studentRes.student || {};
+
+      const r2 = await fetch(`${WEB_APP_URL}?action=getStudentProfileByRoll&roll=${encodeURIComponent(roll)}`);
+      const profileRes = await safeJson(r2);
+      currentProfile = profileRes.ok ? (profileRes.profile || {}) : null;
+
+      fillStudentFields(currentStudent, currentProfile);
+      setFetchStatus("Student fetched successfully", "green");
+    } catch (err) {
+      clearStudentFields();
+      setFetchStatus("Fetch failed", "red");
+    }
+  }
+
+  function validateForm() {
+    const roll = document.getElementById("roll").value.trim();
+    const type = document.getElementById("type").value.trim().toUpperCase();
+
+    if (!roll) return "Roll number required";
+    if (!currentStudent) return "Fetch valid student first";
+    if (!type) return "Select request type";
+
+    if (type === "HOME PASS") {
+      const fromDate = document.getElementById("fromDate").value.trim();
+      const toDate = document.getElementById("toDate").value.trim();
+      const reason = document.getElementById("reason").value.trim();
+      const fatherPhone = document.getElementById("fatherPhone").value.trim();
+
+      if (!fromDate) return "From date required";
+      if (!toDate) return "To date required";
+      if (!reason) return "Reason required";
+      if (!fatherPhone) return "Father phone required";
+    }
+
+    return "";
+  }
+
+  async function submitRequest() {
+    const err = validateForm();
+    if (err) {
+      showToast(err, "error");
+      return;
+    }
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    try {
+      currentGeo = await getLocationPromise();
+
+      const payload = {
+        action: "addEntry",
+        roll: document.getElementById("roll").value.trim(),
+        type: document.getElementById("type").value.trim(),
+        gate: "HOSTEL",
+        lat: currentGeo.lat,
+        lng: currentGeo.lng,
+        fromDate: document.getElementById("fromDate").value.trim(),
+        toDate: document.getElementById("toDate").value.trim(),
+        reason: document.getElementById("reason").value.trim(),
+        fatherPhone: document.getElementById("fatherPhone").value.trim(),
+        fatherName: document.getElementById("fatherName").value.trim()
+      };
+
+      const r = await fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+
+      const res = await safeJson(r);
+
+      if (!res.ok) {
+        showToast(res.message || "Submit failed", "error");
+        return;
+      }
+
+      showToast(res.message || "Request submitted successfully", "success");
+
+      document.getElementById("type").value = "";
+      document.getElementById("fromDate").value = "";
+      document.getElementById("toDate").value = "";
+      document.getElementById("reason").value = "";
+      document.getElementById("fatherPhone").value = "";
+      toggleHomePass();
+
+    } catch (e) {
+      showToast("Request submit failed", "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Submit Request";
+    }
+  }
+
+  let rollTimer = null;
+  document.getElementById("roll").addEventListener("input", function() {
+    clearTimeout(rollTimer);
+    rollTimer = setTimeout(fetchStudentByRoll, 500);
+  });
+
+  document.getElementById("roll").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") fetchStudentByRoll();
+  });
+
+  document.getElementById("type").addEventListener("change", toggleHomePass);
+  document.getElementById("submitBtn").addEventListener("click", submitRequest);
+
+  window.addEventListener("load", async function() {
+    currentGeo = await getLocationPromise();
+  });
+</script>
+
+</body>
+</html>
