@@ -1,0 +1,1968 @@
+ <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - Smart Entry Portal</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --primary:#0f62fe;
+      --primary-dark:#0b4fd1;
+      --secondary:#eef4ff;
+      --surface:#ffffff;
+      --surface-2:#f7faff;
+      --line:#d9e4f5;
+      --text:#0f172a;
+      --muted:#5b6b86;
+      --success:#198754;
+      --danger:#dc3545;
+      --warning:#f59e0b;
+      --radius-xl:24px;
+      --radius-lg:18px;
+      --shadow-sm:0 6px 18px rgba(15, 98, 254, .08);
+      --shadow-md:0 14px 34px rgba(15, 98, 254, .12);
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      min-height:100vh;
+      margin:0;
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(15,98,254,.10), transparent 22%),
+        linear-gradient(180deg, #f7fbff 0%, #edf4ff 52%, #f9fbff 100%);
+      overflow-x:hidden;
+    }
+
+    img{
+      max-width:100%;
+      height:auto;
+      display:block;
+    }
+
+    a{text-decoration:none}
+    .app{display:flex;min-height:100vh}
+
+    .sidebar{
+      width:288px;
+      background:linear-gradient(180deg,#ffffff 0%,#f5f9ff 100%);
+      border-right:1px solid var(--line);
+      padding:20px 16px;
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow-y:auto;
+      flex-shrink:0;
+      z-index:1050;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:6px 8px 18px;
+      margin-bottom:12px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .brand img{
+      width:50px;
+      height:50px;
+      border-radius:14px;
+      object-fit:cover;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+    }
+
+    .brand h6{
+      margin:0;
+      font-weight:900;
+      color:#123067;
+      letter-spacing:.2px;
+    }
+
+    .brand small{
+      color:var(--muted);
+      font-weight:700;
+      display:block;
+      margin-top:2px;
+    }
+
+    .nav-label{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#7a8aa8;
+      font-weight:900;
+      margin:12px 8px 8px;
+    }
+
+    .navbtn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      border:none;
+      background:transparent;
+      color:#1b325f;
+      padding:12px 14px;
+      border-radius:14px;
+      margin:6px 0;
+      font-weight:800;
+      text-align:left;
+      transition:.18s ease;
+    }
+
+    .navbtn:hover{
+      background:#edf4ff;
+      transform:translateX(2px);
+    }
+
+    .navbtn.active{
+      background:linear-gradient(90deg,#e9f2ff,#f8fbff);
+      color:var(--primary);
+      border:1px solid #cfe0ff;
+      box-shadow:var(--shadow-sm);
+    }
+
+    .side-footer{
+      margin-top:18px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fbfdff;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .main{
+      flex:1;
+      padding:24px 24px 40px;
+      min-width:0;
+    }
+
+    .hero{
+      background:linear-gradient(135deg,#0f62fe 0%,#2f7bff 42%,#8db5ff 100%);
+      border-radius:28px;
+      padding:20px;
+      color:#fff;
+      box-shadow:0 22px 45px rgba(15,98,254,.18);
+      margin-bottom:18px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
+      right:-80px;
+      top:-80px;
+    }
+
+    .hero-top{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:center;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:30px;
+      font-weight:1000;
+      letter-spacing:-.02em;
+    }
+
+    .hero p{
+      margin:6px 0 0;
+      color:rgba(255,255,255,.9);
+      max-width:720px;
+      font-weight:500;
+      line-height:1.7;
+    }
+
+    .hero-pills{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero-pill{
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
+      padding:8px 12px;
+      border-radius:999px;
+      color:#fff;
+      font-weight:800;
+      font-size:12px;
+      backdrop-filter:blur(6px);
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:16px 18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.82);
+      backdrop-filter:blur(8px);
+      border-radius:22px;
+      margin-bottom:18px;
+      box-shadow:var(--shadow-sm);
+      flex-wrap:wrap;
+    }
+
+    .topbar .title b{
+      font-size:19px;
+      color:#163469;
+    }
+
+    .topbar small{color:var(--muted);font-weight:700}
+    .topbar-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+    .mobile-menu-btn{
+      display:none;
+      width:46px;
+      height:46px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#fff;
+      font-size:24px;
+      font-weight:900;
+      line-height:1;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 10px 20px rgba(15,98,254,.20);
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.72);
+      backdrop-filter:blur(8px);
+      border-radius:28px;
+      padding:18px;
+      box-shadow:var(--shadow-md);
+    }
+
+    .card-white,
+    .chart-card,
+    .white-card,
+    .table-wrap{
+      background:var(--surface);
+      color:var(--text);
+      border-radius:22px;
+      box-shadow:var(--shadow-sm);
+      border:1px solid var(--line);
+    }
+
+    .card-white{padding:24px}
+    .chart-card,.white-card{padding:16px;margin-bottom:18px}
+    .table-wrap{overflow:hidden}
+
+    .btn-brand{
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      border:none;
+      color:#fff;
+      font-weight:800;
+      border-radius:12px;
+      box-shadow:0 10px 20px rgba(15,98,254,.20);
+    }
+
+    .btn-brand:hover{color:#fff;filter:brightness(.98)}
+
+    .btn-soft{
+      background:#eef4ff;
+      border:1px solid #d9e7ff;
+      color:#0f62fe;
+      font-weight:800;
+      border-radius:12px;
+    }
+
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid #d7e4fb;
+      background:#f7faff;
+      color:#244278;
+      font-weight:800;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .toolbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:6px 0 16px;
+    }
+
+    .toolbar-left,.toolbar-right{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .searchbox{
+      max-width:320px;
+      min-width:220px;
+    }
+
+    .stats,.stats-2{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(180px,1fr));
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .stat{
+      background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+      border-radius:20px;
+      padding:16px 16px 14px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .stat::before{
+      content:"";
+      position:absolute;
+      inset:auto 0 0 0;
+      height:4px;
+      background:linear-gradient(90deg,#0f62fe,#7bb2ff);
+    }
+
+    .stat-title{
+      font-size:12px;
+      font-weight:900;
+      color:#6980a8;
+      letter-spacing:.04em;
+    }
+
+    .stat-value{
+      font-size:30px;
+      font-weight:1000;
+      line-height:1;
+      margin:8px 0 6px;
+      color:#0f2145;
+      word-break:break-word;
+    }
+
+    .stat-sub{font-size:12px;color:var(--muted);font-weight:700}
+
+    .table thead th{
+      white-space:nowrap;
+      background:#edf4ff!important;
+      color:#173869!important;
+      border-bottom:1px solid #dce8fb!important;
+      font-size:13px;
+    }
+
+    .table tbody td{
+      vertical-align:middle;
+      border-color:#edf2fb;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(odd)>*{background-color:#fcfdff}
+    .reason-cell{max-width:240px}
+
+    .badge-soft{
+      border:1px solid #dbe8ff;
+      background:#f5f9ff;
+      color:#163469;
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:800;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .page{display:none}
+    .page.active{display:block}
+    .section-title{
+      font-weight:900;
+      margin:0;
+      color:#ffffff;
+    }
+
+    .risk-list .item,
+    .timeline-item{
+      border:1px solid #e4edf9;
+      border-radius:16px;
+      padding:12px 14px;
+      background:#fbfdff;
+      box-shadow:0 4px 10px rgba(15,98,254,.04);
+      word-break:break-word;
+    }
+
+    .timeline{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:340px;
+      overflow:auto;
+    }
+
+    .custom-alert{
+      position:fixed;
+      inset:0;
+      background:rgba(9,20,42,.42);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      visibility:hidden;
+      opacity:0;
+      transition:.2s;
+      z-index:9999;
+      padding:16px;
+    }
+
+    .custom-alert.show{
+      visibility:visible;
+      opacity:1;
+    }
+
+    .alert-box{
+      background:#fff;
+      color:#111;
+      padding:22px 24px;
+      border-radius:18px;
+      min-width:320px;
+      max-width:520px;
+      width:100%;
+      text-align:center;
+      box-shadow:0 18px 40px rgba(15,98,254,.20);
+      border:1px solid var(--line);
+    }
+
+    .approval-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .form-control,
+    .form-select{
+      border-radius:12px;
+      border:1px solid #d7e3f7;
+      min-height:44px;
+      box-shadow:none!important;
+    }
+
+    .form-control:focus,
+    .form-select:focus{
+      border-color:#9ec1ff;
+      box-shadow:0 0 0 .2rem rgba(15,98,254,.10)!important;
+    }
+
+    .login-title{
+      color:#163469;
+      font-weight:900;
+    }
+
+    .subtle-text{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .table-responsive{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .sidebar-overlay{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.45);
+      z-index:1040;
+      opacity:0;
+      pointer-events:none;
+      transition:.25s ease;
+    }
+
+    .sidebar-overlay.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    @media(max-width:1200px){
+      .stats,.stats-2{
+        grid-template-columns:repeat(2,minmax(160px,1fr));
+      }
+    }
+
+    @media(max-width:992px){
+      .sidebar{
+        display:block !important;
+        position:fixed;
+        top:0;
+        right:0;
+        left:auto;
+        width:290px;
+        max-width:86vw;
+        height:100vh;
+        border-right:none;
+        border-left:1px solid var(--line);
+        transform:translateX(100%);
+        transition:transform .28s ease;
+        box-shadow:-18px 0 40px rgba(15,23,42,.18);
+      }
+
+      .sidebar.open{
+        transform:translateX(0);
+      }
+
+      .sidebar-overlay{
+        display:block;
+      }
+
+      .main{
+        padding:14px;
+      }
+
+      .hero h1{
+        font-size:24px;
+      }
+
+      .toolbar-left,
+      .toolbar-right{
+        width:100%;
+      }
+
+      .searchbox{
+        max-width:100%;
+        min-width:100%;
+      }
+
+      .mobile-menu-btn{
+        display:inline-flex;
+      }
+    }
+
+    @media(max-width:768px){
+      .stats,.stats-2{
+        grid-template-columns:1fr;
+      }
+
+      .table-wrap{
+        overflow-x:auto;
+      }
+
+      .topbar{
+        padding:14px;
+      }
+
+      .panel{
+        padding:14px;
+        border-radius:22px;
+      }
+
+      .card-white{
+        padding:18px;
+      }
+
+      .hero{
+        padding:16px;
+        border-radius:22px;
+      }
+
+      .hero-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .hero h1{
+        font-size:22px;
+      }
+
+      .topbar-actions{
+        width:100%;
+      }
+
+      .topbar-actions .pill,
+      .topbar-actions button{
+        width:100%;
+        text-align:center;
+      }
+
+      .toolbar .btn,
+      .toolbar .form-control,
+      .toolbar .form-select{
+        width:100%;
+      }
+
+      .approval-actions .btn{
+        width:100%;
+      }
+
+      .alert-box{
+        min-width:auto;
+      }
+    }
+
+    @media(max-width:480px){
+      .main{
+        padding:10px;
+      }
+
+      .hero h1{
+        font-size:20px;
+      }
+
+      .stat-value{
+        font-size:26px;
+      }
+
+      .topbar .title b{
+        font-size:17px;
+      }
+
+      .card-white,
+      .white-card,
+      .chart-card{
+        border-radius:18px;
+      }
+
+      .sidebar{
+        width:280px;
+        max-width:88vw;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+<div class="app">
+  <aside id="sidebarWrap" class="sidebar d-none">
+    <div class="brand">
+      <img src="logo.png" alt="Smart Entry Logo">
+      <div>
+        <h6>SMART ENTRY</h6>
+        <small>Admin Control Panel</small>
+      </div>
+    </div>
+
+    <div class="nav-label">Navigation</div>
+    <button id="navDash" class="navbtn active" type="button">Dashboard</button>
+    <button id="navEntries" class="navbtn" type="button">Entries</button>
+    <button id="navOutside" class="navbtn" type="button">Outside Live</button>
+    <button id="navFines" class="navbtn" type="button">Fines</button>
+    <button id="navApproval" class="navbtn" type="button">Approval</button>
+    <button id="navLogs" class="navbtn" type="button">Login Logs</button>
+    <button id="navFineSummary" class="navbtn" type="button">Fine Summary</button>
+    <button id="navHistory" class="navbtn" type="button">Student History</button>
+
+    <div class="side-footer">
+      <div><b>Status:</b> Connected</div>
+      <div><b>Theme:</b> Professional Learning Portal UI</div>
+      <div class="mt-1">© Smart Entry Portal</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section id="heroWrap" class="hero d-none">
+      <div class="hero-top">
+        <div>
+          <h1>Admin Dashboard</h1>
+          <p>Monitor hostel movement, approvals, fines, live activity, and student history from one clean professional dashboard.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+          <a class="btn btn-light btn-sm fw-bold px-3" href="index3.html">Student Page</a>
+          <button id="refreshHeroBtn" class="btn btn-outline-light btn-sm fw-bold px-3" type="button">Refresh Data</button>
+          <button id="mobileMenuBtnHero" class="mobile-menu-btn d-lg-none" type="button" aria-label="Open menu">⋮</button>
+        </div>
+      </div>
+      <div class="hero-pills">
+        <span class="hero-pill" id="roleTagHero">ROLE: -</span>
+        <span class="hero-pill" id="pendingCountHero">PENDING APPROVAL: 0</span>
+        <span class="hero-pill" id="rangePillHero">RANGE: Today</span>
+      </div>
+    </section>
+
+    <div id="topbarWrap" class="topbar d-none">
+      <div class="title">
+        <b id="pageTitle">Dashboard</b><br>
+        <small>Optimized Admin Dashboard</small>
+      </div>
+      <div class="topbar-actions">
+        <span class="pill" id="roleTag"></span>
+        <span class="pill" id="pendingCountTop">PENDING APPROVAL: 0</span>
+        <button id="logoutBtn" class="btn btn-danger btn-sm d-none" type="button">Logout</button>
+        <button id="mobileMenuBtnTop" class="mobile-menu-btn d-lg-none" type="button" aria-label="Open menu">⋮</button>
+      </div>
+    </div>
+
+    <div id="loginCard" class="card-white mb-3">
+      <h4 class="login-title mb-2">Welcome back</h4>
+      <div class="subtle-text mb-3">Login to access Smart Entry monitoring, approvals, and fine management.</div>
+      <div class="row g-3">
+        <div class="col-12">
+          <select id="userType" class="form-select">
+            <option value="ADMIN">ADMIN</option>
+            <option value="WARDEN">WARDEN</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <input id="username" class="form-control" placeholder="Username">
+        </div>
+        <div class="col-md-6">
+          <input id="password" type="password" class="form-control" placeholder="Password">
+        </div>
+        <div class="col-12 d-grid">
+          <button id="loginBtn" class="btn btn-brand" type="button">Login to Dashboard</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="appWrap" class="panel d-none">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button id="refreshDashBtn" class="btn btn-brand" type="button">Refresh Dashboard</button>
+          <button id="loadBtn" class="btn btn-success" type="button">Load Entries</button>
+          <button id="refreshAllBtn" class="btn btn-soft" type="button">Refresh All</button>
+          <input id="searchInput" class="form-control searchbox" placeholder="Search name/roll...">
+        </div>
+        <div class="toolbar-right">
+          <span class="pill" id="rangePill">RANGE: Today</span>
+          <input id="fromDate" class="form-control" type="date" />
+          <input id="toDate" class="form-control" type="date" />
+          <button id="applyRangeBtn" class="btn btn-light fw-bold" type="button">Apply</button>
+        </div>
+      </div>
+
+      <section id="pageDashboard" class="page active">
+        <div class="stats">
+          <div class="stat"><div class="stat-title">TOTAL STUDENTS</div><div id="statTotalStudents" class="stat-value">0</div><div class="stat-sub">Registered students</div></div>
+          <div class="stat"><div class="stat-title">CURRENTLY INSIDE</div><div id="statInside" class="stat-value">0</div><div class="stat-sub">Inside hostel</div></div>
+          <div class="stat"><div class="stat-title">CURRENTLY OUTSIDE</div><div id="statOutside" class="stat-value">0</div><div class="stat-sub">Outside hostel</div></div>
+          <div class="stat"><div class="stat-title">PENDING VERIFY</div><div id="statPending" class="stat-value">0</div><div class="stat-sub">Pending requests</div></div>
+        </div>
+
+        <div class="stats-2">
+          <div class="stat"><div class="stat-title">TODAY IN</div><div id="statInToday" class="stat-value">0</div><div class="stat-sub">IN count today</div></div>
+          <div class="stat"><div class="stat-title">TODAY OUT</div><div id="statOutToday" class="stat-value">0</div><div class="stat-sub">OUT count today</div></div>
+          <div class="stat"><div class="stat-title">LATE IN</div><div id="statLateIn" class="stat-value">0</div><div class="stat-sub">Late IN cases</div></div>
+          <div class="stat"><div class="stat-title">TODAY LOGINS</div><div id="statTodayLogins" class="stat-value">0</div><div class="stat-sub">Successful logins</div></div>
+        </div>
+
+        <div class="stats-2">
+          <div class="stat"><div class="stat-title">TODAY FINE</div><div id="statFineToday" class="stat-value">₹ 0</div><div class="stat-sub">Added today</div></div>
+          <div class="stat"><div class="stat-title">UNPAID FINE</div><div id="statUnpaidFine" class="stat-value">₹ 0</div><div class="stat-sub">Pending amount</div></div>
+          <div class="stat"><div class="stat-title">PAID FINE</div><div id="statPaidFine" class="stat-value">₹ 0</div><div class="stat-sub">Collected amount</div></div>
+          <div class="stat"><div class="stat-title">LOGIN ROLES</div><div id="statRoleMix" class="stat-value">0/0/0</div><div class="stat-sub">Admin / Warden / Gate</div></div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-8">
+            <div class="chart-card">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <b>Movement Trend</b>
+                <div class="text-muted small" id="chartHint">Entries load hone par graph dikhega</div>
+              </div>
+              <div class="mt-2" style="height:320px;">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <b>Login Role Chart</b>
+                <div class="text-muted small">Today</div>
+              </div>
+              <div class="mt-2" style="height:320px;">
+                <canvas id="loginRoleChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="white-card">
+              <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                <h6 class="m-0 fw-bold">Live Outside Students</h6>
+                <span class="small text-muted">Real-time monitoring</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped align-middle m-0">
+                  <thead>
+                    <tr>
+                      <th>Roll</th>
+                      <th>Room</th>
+                      <th>OUT Time</th>
+                      <th>Pass Approved</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardOutsideBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="white-card mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                <h6 class="m-0 fw-bold">Risk Detection</h6>
+                <span class="small text-muted">Important alerts</span>
+              </div>
+              <div id="riskPanel" class="risk-list"></div>
+            </div>
+
+            <div class="white-card">
+              <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                <h6 class="m-0 fw-bold">Activity Timeline</h6>
+                <span class="small text-muted">Latest activity</span>
+              </div>
+              <div id="timelineBox" class="timeline"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pageEntries" class="page">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h5 class="section-title">Entry Records</h5>
+        </div>
+        <div class="table-wrap table-responsive">
+          <table class="table table-striped align-middle m-0">
+            <thead>
+              <tr>
+                <th>Name</th><th>Roll</th><th>Branch</th><th>Room</th><th>Type</th>
+                <th>Gate</th><th>Time</th><th>Status</th><th>Verified By</th>
+                <th>Fine</th><th>Amount</th><th>Reason</th><th>Fine Status</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pageOutside" class="page">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h5 class="section-title">Currently Outside</h5>
+        </div>
+        <div class="table-wrap table-responsive">
+          <table class="table table-bordered m-0">
+            <thead>
+              <tr>
+                <th>Roll</th><th>Room</th><th>OUT Time</th><th>Pass Approved</th><th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="outsideBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pageFines" class="page">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h5 class="section-title">Fines Ledger</h5>
+        </div>
+        <div class="d-flex gap-2 flex-wrap align-items-center mb-3">
+          <select id="fineStatusFilter" class="form-select" style="max-width:220px">
+            <option value="UNPAID" selected>UNPAID</option>
+            <option value="PAID">PAID</option>
+            <option value="ALL">ALL</option>
+          </select>
+          <button id="reloadFinesBtn" class="btn btn-light fw-bold" type="button">Refresh Fines</button>
+          <span class="badge-soft" id="fineCountPill">Rows: 0</span>
+        </div>
+        <div class="table-wrap table-responsive">
+          <table class="table table-striped align-middle m-0">
+            <thead>
+              <tr>
+                <th>DateTime</th><th>Roll</th><th>Name</th><th>Type</th><th>Amount</th>
+                <th>Reason</th><th>Status</th><th>PaidAt</th><th>PaidBy</th><th>Remark</th><th>EntryRow</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="finesBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pageApproval" class="page">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h5 class="section-title">Pending Student Approvals</h5>
+          <span class="text-white-50 small">Photo / Document / Approve / Reject</span>
+        </div>
+        <div class="d-flex gap-2 flex-wrap align-items-center mb-3">
+          <input id="approvalSearchInput" class="form-control" style="max-width:300px" placeholder="Search roll / name / room">
+          <button id="reloadPendingBtn" class="btn btn-light fw-bold" type="button">Refresh Approvals</button>
+          <span class="badge-soft" id="approvalCountPill">Rows: 0</span>
+        </div>
+        <div class="table-wrap table-responsive">
+          <table class="table table-striped align-middle m-0">
+            <thead>
+              <tr>
+                <th>Roll</th><th>Name</th><th>Branch</th><th>Room</th><th>Course</th><th>Mobile</th><th>Photo</th><th>Document</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="pendingBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pageLogs" class="page">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h5 class="section-title">Login Logs</h5>
+        </div>
+        <div class="d-flex gap-2 flex-wrap align-items-center mb-3">
+          <input id="logSearchInput" class="form-control" style="max-width:300px" placeholder="Search username / role / status">
+          <button id="reloadLogsBtn" class="btn btn-light fw-bold" type="button">Refresh Logs</button>
+          <span class="badge-soft" id="logCountPill">Rows: 0</span>
+        </div>
+        <div class="table-wrap table-responsive">
+          <table class="table table-striped align-middle m-0">
+            <thead>
+              <tr><th>DateTime</th><th>Username</th><th>Role</th><th>Status</th><th>Message</th><th>Source</th></tr>
+            </thead>
+            <tbody id="logsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pageFineSummary" class="page">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h5 class="section-title">Fine Summary</h5>
+        </div>
+
+        <div class="stats-2">
+          <div class="stat"><div class="stat-title">UNPAID COUNT</div><div id="fsUnpaidCount" class="stat-value">0</div><div class="stat-sub">Pending fines</div></div>
+          <div class="stat"><div class="stat-title">PAID COUNT</div><div id="fsPaidCount" class="stat-value">0</div><div class="stat-sub">Cleared fines</div></div>
+          <div class="stat"><div class="stat-title">UNPAID TOTAL</div><div id="fsUnpaidTotal" class="stat-value">₹ 0</div><div class="stat-sub">Pending amount</div></div>
+          <div class="stat"><div class="stat-title">PAID TOTAL</div><div id="fsPaidTotal" class="stat-value">₹ 0</div><div class="stat-sub">Collected amount</div></div>
+        </div>
+
+        <div class="table-wrap table-responsive">
+          <table class="table table-striped align-middle m-0">
+            <thead>
+              <tr><th>Roll</th><th>Name</th><th>Total Fine</th><th>Unpaid Fine</th><th>Paid Fine</th><th>Count</th></tr>
+            </thead>
+            <tbody id="fineSummaryBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pageHistory" class="page">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h5 class="section-title">Student History</h5>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <input id="historyRollInput" class="form-control" placeholder="Enter Roll Number">
+          </div>
+          <div class="col-md-6 d-flex gap-2 flex-wrap">
+            <button id="searchHistoryBtn" class="btn btn-light fw-bold" type="button">Search History</button>
+            <button id="clearHistoryBtn" class="btn btn-outline-light" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div id="historyStudentCard" class="card-white p-3 mb-3 d-none">
+          <h6 class="fw-bold mb-2">Student Info</h6>
+          <div id="historyStudentInfo"></div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="table-wrap table-responsive">
+              <div class="p-3 fw-bold border-bottom">Entry History</div>
+              <table class="table table-striped align-middle m-0">
+                <thead>
+                  <tr><th>Time</th><th>Type</th><th>Status</th><th>Gate</th><th>Fine</th><th>Reason</th><th>Code</th></tr>
+                </thead>
+                <tbody id="historyEntriesBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="table-wrap table-responsive">
+              <div class="p-3 fw-bold border-bottom">Fine History</div>
+              <table class="table table-striped align-middle m-0">
+                <thead>
+                  <tr><th>DateTime</th><th>Type</th><th>Amount</th><th>Status</th><th>Reason</th></tr>
+                </thead>
+                <tbody id="historyFinesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="customAlert" class="custom-alert">
+  <div class="alert-box">
+    <div id="alertMessage" class="fw-bold mb-3"></div>
+    <button class="btn btn-dark btn-sm" type="button" onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzPHAnb85VNjt9C_HngDf-KXTyECCC7QlJKxvCevx4-AchwK1APRAiAsWYad7vYXfOz/exec";
+  const sessionKey = "adminSession";
+  const roleKey = "adminRole";
+
+  const tbody = document.getElementById("tbody");
+  const finesBody = document.getElementById("finesBody");
+  const pendingBody = document.getElementById("pendingBody");
+  const logsBody = document.getElementById("logsBody");
+  const fineSummaryBody = document.getElementById("fineSummaryBody");
+  const historyEntriesBody = document.getElementById("historyEntriesBody");
+  const historyFinesBody = document.getElementById("historyFinesBody");
+  const dashboardOutsideBody = document.getElementById("dashboardOutsideBody");
+
+  let trendChart = null;
+  let loginRoleChart = null;
+  let cachedEntries = [];
+  let cachedOutside = [];
+  let cachedPending = [];
+  let cachedLogs = [];
+  let cachedFineSummary = [];
+  let alertTimer = null;
+
+  let dashboardLoaded = false;
+  let entriesLoaded = false;
+  let finesLoaded = false;
+  let approvalsLoaded = false;
+  let logsLoaded = false;
+  let fineSummaryLoaded = false;
+
+  function isMobileView() {
+    return window.innerWidth <= 992;
+  }
+
+  function openSidebar() {
+    const sidebar = document.getElementById("sidebarWrap");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (!sidebar || sidebar.classList.contains("d-none")) return;
+    if (!isMobileView()) return;
+    sidebar.classList.add("open");
+    overlay.classList.add("show");
+  }
+
+  function closeSidebar() {
+    const sidebar = document.getElementById("sidebarWrap");
+    const overlay = document.getElementById("sidebarOverlay");
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+  }
+
+  function handleResponsiveSidebar() {
+    if (!isMobileView()) {
+      closeSidebar();
+    }
+  }
+
+  function getAdminToken() {
+    return sessionStorage.getItem(sessionKey) || "";
+  }
+
+  function buildGetUrl(action, extraParams = {}) {
+    const params = new URLSearchParams({
+      action,
+      token: getAdminToken(),
+      ...extraParams
+    });
+    return `${WEB_APP_URL}?${params.toString()}`;
+  }
+
+  function withAdminToken(payload = {}) {
+    return {
+      ...payload,
+      token: getAdminToken()
+    };
+  }
+
+  function showAlert(msg, color="red"){
+    document.getElementById("alertMessage").innerText = msg;
+    document.getElementById("alertMessage").style.color = color;
+    document.getElementById("customAlert").classList.add("show");
+    clearTimeout(alertTimer);
+    alertTimer = setTimeout(() => closeAlert(), 1400);
+  }
+
+  function closeAlert(){
+    document.getElementById("customAlert").classList.remove("show");
+  }
+
+  function escapeHtml(str=""){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function normalizeOpenUrl(url){
+    url = String(url || "").trim();
+    if(!url) return "";
+    if(/^https?:\/\//i.test(url)) return url;
+    return "";
+  }
+
+  function openExternalFile(url){
+    const finalUrl = normalizeOpenUrl(url);
+    if(!finalUrl){
+      showAlert("❌ Valid file URL not found", "red");
+      return;
+    }
+    window.open(finalUrl, "_blank", "noopener,noreferrer");
+  }
+
+  async function safeJson(r){
+    const txt = await r.text();
+    console.log("RAW RESPONSE TEXT:", txt);
+    try{
+      return JSON.parse(txt);
+    }catch(e){
+      return {
+        ok:false,
+        message:"Server non-JSON response",
+        raw:txt
+      };
+    }
+  }
+
+  async function postToApi(payload){
+    const r = await fetch(WEB_APP_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body:JSON.stringify(payload)
+    });
+    return await safeJson(r);
+  }
+
+  function money(x){
+    return "₹ " + (Number(x || 0) || 0);
+  }
+
+  function setLoggedInUI(isLoggedIn){
+    document.getElementById("loginCard").classList.toggle("d-none", isLoggedIn);
+    document.getElementById("appWrap").classList.toggle("d-none", !isLoggedIn);
+    document.getElementById("logoutBtn").classList.toggle("d-none", !isLoggedIn);
+    document.getElementById("sidebarWrap").classList.toggle("d-none", !isLoggedIn);
+    document.getElementById("heroWrap").classList.toggle("d-none", !isLoggedIn);
+    document.getElementById("topbarWrap").classList.toggle("d-none", !isLoggedIn);
+
+    if (!isLoggedIn) {
+      closeSidebar();
+    }
+  }
+
+  function updateRoleTag(){
+    const role = (sessionStorage.getItem(roleKey) || "").toUpperCase();
+    const roleText = role ? ("ROLE: " + role) : "";
+    document.getElementById("roleTag").innerText = roleText;
+    document.getElementById("roleTagHero").innerText = roleText || "ROLE: -";
+  }
+
+  function updatePendingTopCount(n=0){
+    const txt = "PENDING APPROVAL: " + n;
+    document.getElementById("pendingCountTop").innerText = txt;
+    document.getElementById("pendingCountHero").innerText = txt;
+  }
+
+  function markAllSectionsStale(){
+    dashboardLoaded = false;
+    entriesLoaded = false;
+    finesLoaded = false;
+    approvalsLoaded = false;
+    logsLoaded = false;
+    fineSummaryLoaded = false;
+  }
+
+  function checkAdminSession() {
+    const token = getAdminToken();
+    const role = (sessionStorage.getItem(roleKey) || "").toUpperCase();
+
+    if (!token || (role !== "ADMIN" && role !== "WARDEN")) {
+      showAlert("❌ Session expired. Login again.", "red");
+      logoutAdmin(false);
+      return false;
+    }
+    return true;
+  }
+
+  async function logoutAdmin(callApi = true){
+    try{
+      const token = getAdminToken();
+      const role = sessionStorage.getItem(roleKey) || "";
+      const username = document.getElementById("username").value.trim() || "admin";
+
+      if(callApi && token){
+        try{
+          await postToApi({
+            action:"logoutLog",
+            token: token,
+            username: username,
+            role: role
+          });
+        }catch(err){}
+      }
+    }finally{
+      sessionStorage.removeItem(sessionKey);
+      sessionStorage.removeItem(roleKey);
+      setLoggedInUI(false);
+      updateRoleTag();
+      markAllSectionsStale();
+
+      cachedEntries = [];
+      cachedOutside = [];
+      cachedPending = [];
+      cachedLogs = [];
+      cachedFineSummary = [];
+
+      tbody.innerHTML = "";
+      finesBody.innerHTML = "";
+      pendingBody.innerHTML = "";
+      logsBody.innerHTML = "";
+      fineSummaryBody.innerHTML = "";
+      historyEntriesBody.innerHTML = "";
+      historyFinesBody.innerHTML = "";
+      dashboardOutsideBody.innerHTML = "";
+      document.getElementById("outsideBody").innerHTML = "";
+      document.getElementById("riskPanel").innerHTML = "";
+      document.getElementById("timelineBox").innerHTML = "";
+      document.getElementById("historyStudentCard").classList.add("d-none");
+
+      showAlert("✅ Logged out", "green");
+    }
+  }
+
+  async function adminLogin(){
+    const selectedRole = document.getElementById("userType").value.trim().toUpperCase();
+    const u = document.getElementById("username").value.trim();
+    const p = document.getElementById("password").value.trim();
+
+    if(!u || !p){
+      showAlert("❌ Username/Password missing", "red");
+      return;
+    }
+
+    try{
+      const res = await postToApi({
+        action:"adminLogin",
+        username:u,
+        password:p
+      });
+
+      if(res.ok){
+        const apiRole = String(res.role || "").toUpperCase();
+
+        if(apiRole !== selectedRole){
+          showAlert("❌ Selected role and account role do not match", "red");
+          return;
+        }
+
+        sessionStorage.setItem(sessionKey, res.token || "");
+        sessionStorage.setItem(roleKey, apiRole);
+
+        setLoggedInUI(true);
+        updateRoleTag();
+        markAllSectionsStale();
+        showAlert("✅ Login successful", "green");
+        await refreshAllData();
+      }else{
+        console.log("LOGIN RESPONSE:", res);
+        showAlert("❌ " + (res.raw || res.message || "Invalid"), "red");
+      }
+    }catch(err){
+      console.error("LOGIN ERROR:", err);
+      showAlert("❌ Network/Deploy URL issue", "red");
+    }
+  }
+
+  function getSelectedRange(){
+    return {
+      from: document.getElementById("fromDate").value || "",
+      to: document.getElementById("toDate").value || ""
+    };
+  }
+
+  function setRangePill(){
+    const rg = getSelectedRange();
+    const txt = (rg.from && rg.to) ? `RANGE: ${rg.from} to ${rg.to}` : "RANGE: Today";
+    document.getElementById("rangePill").innerText = txt;
+    document.getElementById("rangePillHero").innerText = txt;
+  }
+
+  function renderOutsideTable(tbodyEl, rows){
+    tbodyEl.innerHTML = "";
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(r.roll || "")}</td>
+        <td>${escapeHtml(r.room || "")}</td>
+        <td>${escapeHtml(r.outTime || "")}</td>
+        <td>${escapeHtml(r.passTime || "")}</td>
+        <td>${escapeHtml(r.duration || "-")}</td>
+      `;
+      tbodyEl.appendChild(tr);
+    });
+  }
+
+  function renderPending(rows){
+    const q = document.getElementById("approvalSearchInput").value.trim().toLowerCase();
+    const filtered = rows.filter(x => {
+      const s = `${x.rollNo} ${x.name} ${x.branch} ${x.room} ${x.course} ${x.mobile}`.toLowerCase();
+      return s.includes(q);
+    });
+
+    pendingBody.innerHTML = "";
+    filtered.forEach(x => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(x.rollNo || "")}</td>
+        <td>${escapeHtml(x.name || "")}</td>
+        <td>${escapeHtml(x.branch || "")}</td>
+        <td>${escapeHtml(x.room || "")}</td>
+        <td>${escapeHtml(x.course || "")}</td>
+        <td>${escapeHtml(x.mobile || "")}</td>
+        <td><button class="btn btn-sm btn-brand">Open</button></td>
+        <td><button class="btn btn-sm btn-soft">Open</button></td>
+        <td class="approval-actions">
+          <button class="btn btn-success btn-sm">Approve</button>
+          <button class="btn btn-danger btn-sm">Reject</button>
+        </td>
+      `;
+
+      tr.children[6].querySelector("button").onclick = () => openExternalFile(x.photoUrl);
+      tr.children[7].querySelector("button").onclick = () => openExternalFile(x.documentsUrl);
+
+      tr.children[8].children[0].onclick = async () => {
+        const res = await postToApi(withAdminToken({ action:"approveStudent", rowNumber:x.rowNumber }));
+        showAlert(res.ok ? "✅ " + res.message : "❌ " + res.message, res.ok ? "green" : "red");
+        if (res.ok) {
+          markAllSectionsStale();
+          await refreshAllData();
+        }
+      };
+
+      tr.children[8].children[1].onclick = async () => {
+        const res = await postToApi(withAdminToken({ action:"rejectStudent", rowNumber:x.rowNumber }));
+        showAlert(res.ok ? "✅ " + res.message : "❌ " + res.message, res.ok ? "green" : "red");
+        if (res.ok) {
+          markAllSectionsStale();
+          await refreshAllData();
+        }
+      };
+
+      pendingBody.appendChild(tr);
+    });
+
+    document.getElementById("approvalCountPill").innerText = "Rows: " + filtered.length;
+    updatePendingTopCount(filtered.length);
+  }
+
+  function renderLogs(rows){
+    const q = document.getElementById("logSearchInput").value.trim().toLowerCase();
+    const filtered = rows.filter(x => {
+      const s = `${x.username} ${x.role} ${x.status} ${x.message}`.toLowerCase();
+      return s.includes(q);
+    });
+
+    logsBody.innerHTML = "";
+    filtered.forEach(x => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(x.dateTime || "")}</td>
+        <td>${escapeHtml(x.username || "")}</td>
+        <td>${escapeHtml(x.role || "")}</td>
+        <td>${escapeHtml(x.status || "")}</td>
+        <td>${escapeHtml(x.message || "")}</td>
+        <td>${escapeHtml(x.source || "")}</td>
+      `;
+      logsBody.appendChild(tr);
+    });
+    document.getElementById("logCountPill").innerText = "Rows: " + filtered.length;
+  }
+
+  function renderFineSummary(rows){
+    fineSummaryBody.innerHTML = "";
+    rows.forEach(x => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(x.roll || "")}</td>
+        <td>${escapeHtml(x.name || "")}</td>
+        <td>${money(x.totalFine)}</td>
+        <td>${money(x.unpaidFine)}</td>
+        <td>${money(x.paidFine)}</td>
+        <td>${escapeHtml(x.count || 0)}</td>
+      `;
+      fineSummaryBody.appendChild(tr);
+    });
+  }
+
+  function renderHistoryEntries(rows){
+    historyEntriesBody.innerHTML = "";
+    rows.forEach(x => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(x.time || "")}</td>
+        <td>${escapeHtml(x.type || "")}</td>
+        <td>${escapeHtml(x.status || "")}</td>
+        <td>${escapeHtml(x.gate || "")}</td>
+        <td>${money(x.fineAmount)}</td>
+        <td>${escapeHtml(x.fineReason || x.leaveReason || "")}</td>
+        <td>${escapeHtml(x.returnCode || "")}</td>
+      `;
+      historyEntriesBody.appendChild(tr);
+    });
+  }
+
+  function renderHistoryFines(rows){
+    historyFinesBody.innerHTML = "";
+    rows.forEach(x => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(x.dateTime || "")}</td>
+        <td>${escapeHtml(x.type || "")}</td>
+        <td>${money(x.fineAmount)}</td>
+        <td>${escapeHtml(x.status || "")}</td>
+        <td>${escapeHtml(x.reason || "")}</td>
+      `;
+      historyFinesBody.appendChild(tr);
+    });
+  }
+
+  function renderFines(rows){
+    finesBody.innerHTML = "";
+    rows.forEach(x => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(x.dateTime || "")}</td>
+        <td>${escapeHtml(x.roll || "")}</td>
+        <td>${escapeHtml(x.name || "")}</td>
+        <td>${escapeHtml(x.type || "")}</td>
+        <td>${money(x.fineAmount)}</td>
+        <td>${escapeHtml(x.reason || "")}</td>
+        <td>${escapeHtml(x.status || "")}</td>
+        <td>${escapeHtml(x.paidAt || "")}</td>
+        <td>${escapeHtml(x.paidBy || "")}</td>
+        <td>${escapeHtml(x.remark || "")}</td>
+        <td>${escapeHtml(x.entryRow || "")}</td>
+        <td></td>
+      `;
+      if(String(x.status || "").toUpperCase() === "UNPAID"){
+        const btn = document.createElement("button");
+        btn.className = "btn btn-success btn-sm";
+        btn.textContent = "Mark Paid";
+        btn.onclick = async () => {
+          const remark = prompt("Remark", "Fine paid") || "Fine paid";
+          const res = await postToApi(withAdminToken({
+            action:"markFinePaid",
+            entryRow:x.entryRow,
+            remark
+          }));
+          showAlert(res.ok ? "✅ " + res.message : "❌ " + res.message, res.ok ? "green" : "red");
+          if(res.ok) {
+            markAllSectionsStale();
+            await refreshAllData();
+          }
+        };
+        tr.lastElementChild.appendChild(btn);
+      }
+      finesBody.appendChild(tr);
+    });
+    document.getElementById("fineCountPill").innerText = "Rows: " + rows.length;
+  }
+
+  function renderTable(rows){
+    const q = document.getElementById("searchInput").value.trim().toLowerCase();
+    const filtered = rows.filter(x => {
+      const s = `${x.name} ${x.roll} ${x.branch} ${x.room} ${x.type} ${x.status}`.toLowerCase();
+      return s.includes(q);
+    });
+
+    tbody.innerHTML = "";
+    filtered.forEach(x => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(x.name || "")}</td>
+        <td>${escapeHtml(x.roll || "")}</td>
+        <td>${escapeHtml(x.branch || "")}</td>
+        <td>${escapeHtml(x.room || "")}</td>
+        <td>${escapeHtml(x.type || "")}</td>
+        <td>${escapeHtml(x.gate || "")}</td>
+        <td>${escapeHtml(x.time || "")}</td>
+        <td>${escapeHtml(x.status || "")}</td>
+        <td>${escapeHtml(x.verifiedBy || "")}</td>
+        <td>${escapeHtml(x.fineApplied || "")}</td>
+        <td>${money(x.fineAmount)}</td>
+        <td class="reason-cell">${escapeHtml(x.fineReason || x.leaveReason || "")}</td>
+        <td>${escapeHtml(x.fineStatus || "")}</td>
+        <td></td>
+      `;
+
+      const wrap = tr.lastElementChild;
+
+      if(String(x.status || "").toUpperCase() === "PENDING"){
+        const btn = document.createElement("button");
+        btn.className = "btn btn-brand btn-sm me-1";
+        btn.textContent = "Verify";
+        btn.onclick = async () => {
+          const role = (sessionStorage.getItem(roleKey) || "ADMIN").toUpperCase();
+          const res = await postToApi(withAdminToken({
+            action:"verifyEntry",
+            rowNumber:x.rowNumber,
+            verifier:role
+          }));
+          showAlert(res.ok ? "✅ " + (res.message || "Verified") : "❌ " + (res.message || "Failed"), res.ok ? "green" : "red");
+          if(res.ok) {
+            markAllSectionsStale();
+            await refreshAllData();
+          }
+        };
+        wrap.appendChild(btn);
+      }
+
+      if(String(x.type || "").toUpperCase() === "IN" && !x.fineStatus){
+        const fineBtn = document.createElement("button");
+        fineBtn.className = "btn btn-warning btn-sm me-1";
+        fineBtn.textContent = "Fine";
+        fineBtn.onclick = async () => {
+          const amount = prompt("Fine amount", "100");
+          if(!amount) return;
+          const reason = prompt("Reason", "Manual fine") || "Manual fine";
+          const res = await postToApi(withAdminToken({
+            action:"applyFine",
+            entryRow:x.rowNumber,
+            amount:amount,
+            reason:reason
+          }));
+          showAlert(res.ok ? "✅ " + res.message : "❌ " + res.message, res.ok ? "green" : "red");
+          if(res.ok) {
+            markAllSectionsStale();
+            await refreshAllData();
+          }
+        };
+        wrap.appendChild(fineBtn);
+      }
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn btn-danger btn-sm";
+      delBtn.textContent = "Delete";
+      delBtn.onclick = async () => {
+        if(!confirm("Delete this row?")) return;
+        const res = await postToApi(withAdminToken({
+          action:"deleteRow",
+          rowNumber:x.rowNumber
+        }));
+        showAlert(res.ok ? "✅ " + res.message : "❌ " + res.message, res.ok ? "green" : "red");
+        if(res.ok) {
+          markAllSectionsStale();
+          await refreshAllData();
+        }
+      };
+      wrap.appendChild(delBtn);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderRiskPanel(){
+    const box = document.getElementById("riskPanel");
+    box.innerHTML = "";
+    const risks = [];
+
+    if((cachedOutside || []).length > 0){
+      risks.push(`Currently outside students: ${(cachedOutside || []).length}`);
+    }
+
+    const unpaid = (cachedFineSummary || []).filter(x => Number(x.unpaidFine || 0) > 0);
+    if(unpaid.length > 0){
+      risks.push(`Students with unpaid fine: ${unpaid.length}`);
+    }
+
+    if((cachedPending || []).length > 0){
+      risks.push(`Pending student approvals: ${(cachedPending || []).length}`);
+    }
+
+    if(risks.length === 0){
+      box.innerHTML = `<div class="item">No major risk detected.</div>`;
+      return;
+    }
+
+    risks.forEach(x => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.textContent = x;
+      box.appendChild(div);
+    });
+  }
+
+  function renderTimeline(rows){
+    const box = document.getElementById("timelineBox");
+    box.innerHTML = "";
+    (rows || []).slice().reverse().slice(0, 20).forEach(x => {
+      const div = document.createElement("div");
+      div.className = "timeline-item";
+      div.innerHTML = `<b>${escapeHtml(x.type || "-")}</b> • ${escapeHtml(x.roll || "-")} • ${escapeHtml(x.status || "-")}<br><span class="text-muted">${escapeHtml(x.time || "")}</span>`;
+      box.appendChild(div);
+    });
+  }
+
+  function renderTrendChart(){
+    const ctx = document.getElementById("trendChart");
+    const labelMap = {};
+    (cachedEntries || []).forEach(x => {
+      const d = String(x.time || "").slice(0, 10) || "Unknown";
+      if(!labelMap[d]) labelMap[d] = { IN:0, OUT:0 };
+      const t = String(x.type || "").toUpperCase();
+      if(t === "IN") labelMap[d].IN++;
+      if(t === "OUT") labelMap[d].OUT++;
+    });
+
+    const labels = Object.keys(labelMap).sort();
+    const inData = labels.map(d => labelMap[d].IN);
+    const outData = labels.map(d => labelMap[d].OUT);
+
+    if(trendChart) trendChart.destroy();
+    trendChart = new Chart(ctx, {
+      type:"bar",
+      data:{
+        labels,
+        datasets:[
+          { label:"IN", data:inData },
+          { label:"OUT", data:outData }
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false }
+    });
+  }
+
+  function renderLoginRoleChart(adminCount, wardenCount, gateCount){
+    const ctx = document.getElementById("loginRoleChart");
+    if(loginRoleChart) loginRoleChart.destroy();
+    loginRoleChart = new Chart(ctx, {
+      type:"doughnut",
+      data:{
+        labels:["ADMIN","WARDEN","GATE"],
+        datasets:[{
+          data:[adminCount, wardenCount, gateCount]
+        }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false }
+    });
+  }
+
+  async function loadDashboardBundle(){
+    try{
+      const r = await fetch(buildGetUrl("getAdminDashboardBundle"));
+      const res = await safeJson(r);
+
+      if(!res.ok){
+        showAlert("❌ " + (res.message || "Dashboard bundle error"), "red");
+        if ((res.message || "").toLowerCase().includes("session expired")) logoutAdmin(false);
+        return;
+      }
+
+      const dash = res.dashboard || {};
+      cachedOutside = res.outsideLive || [];
+      cachedPending = res.pendingStudents || [];
+      cachedLogs = res.loginLogs || [];
+      cachedFineSummary = (res.fineSummary && res.fineSummary.studentRows) ? res.fineSummary.studentRows : [];
+
+      document.getElementById("statTotalStudents").innerText = dash.totalStudents ?? 0;
+      document.getElementById("statInside").innerText = dash.currentlyInsideCount ?? 0;
+      document.getElementById("statOutside").innerText = dash.outsideCount ?? 0;
+      document.getElementById("statPending").innerText = dash.pendingCount ?? 0;
+      document.getElementById("statInToday").innerText = dash.totalInToday ?? 0;
+      document.getElementById("statOutToday").innerText = dash.totalOutToday ?? 0;
+      document.getElementById("statLateIn").innerText = dash.lateInCount ?? 0;
+      document.getElementById("statTodayLogins").innerText = dash.todayLoginCount ?? 0;
+      document.getElementById("statFineToday").innerText = "₹ " + (dash.totalFineToday ?? 0);
+      document.getElementById("statUnpaidFine").innerText = "₹ " + (dash.unpaidFineTotal ?? 0);
+      document.getElementById("statPaidFine").innerText = "₹ " + (dash.paidFineTotal ?? 0);
+      document.getElementById("statRoleMix").innerText =
+        `${dash.adminLoginCount ?? 0}/${dash.wardenLoginCount ?? 0}/${dash.gateLoginCount ?? 0}`;
+
+      renderLoginRoleChart(
+        dash.adminLoginCount ?? 0,
+        dash.wardenLoginCount ?? 0,
+        dash.gateLoginCount ?? 0
+      );
+
+      renderOutsideTable(document.getElementById("outsideBody"), cachedOutside);
+      renderOutsideTable(dashboardOutsideBody, cachedOutside);
+      renderPending(cachedPending);
+      renderLogs(cachedLogs);
+      renderFineSummary(cachedFineSummary);
+
+      document.getElementById("fsUnpaidCount").innerText = res.fineSummary?.unpaidCount ?? 0;
+      document.getElementById("fsPaidCount").innerText = res.fineSummary?.paidCount ?? 0;
+      document.getElementById("fsUnpaidTotal").innerText = "₹ " + (res.fineSummary?.totalUnpaid ?? 0);
+      document.getElementById("fsPaidTotal").innerText = "₹ " + (res.fineSummary?.totalPaid ?? 0);
+
+      updatePendingTopCount(cachedPending.length);
+      renderRiskPanel();
+      renderTimeline(cachedEntries);
+
+      dashboardLoaded = true;
+      approvalsLoaded = true;
+      logsLoaded = true;
+      fineSummaryLoaded = true;
+    }catch(err){
+      showAlert("❌ Dashboard bundle load error", "red");
+    }
+  }
+
+  async function loadEntries(){
+    try{
+      const r = await fetch(buildGetUrl("getEntries"));
+      const res = await safeJson(r);
+
+      if(!res.ok){
+        showAlert("❌ " + (res.message || "Entries load error"), "red");
+        if ((res.message || "").toLowerCase().includes("session expired")) logoutAdmin(false);
+        return;
+      }
+
+      cachedEntries = res.rows || [];
+      renderTable(cachedEntries);
+      renderTrendChart();
+      renderTimeline(cachedEntries);
+      renderRiskPanel();
+      entriesLoaded = true;
+    }catch(err){
+      showAlert("❌ Entries load error", "red");
+    }
+  }
+
+  async function loadFines(){
+    try{
+      const status = (document.getElementById("fineStatusFilter").value || "UNPAID").toUpperCase();
+      const r = await fetch(buildGetUrl("getFines", { status }));
+      const res = await safeJson(r);
+
+      if(!res.ok){
+        finesBody.innerHTML = "";
+        document.getElementById("fineCountPill").innerText = "Rows: 0";
+        if ((res.message || "").toLowerCase().includes("session expired")) logoutAdmin(false);
+        return;
+      }
+
+      renderFines(res.rows || []);
+      finesLoaded = true;
+    }catch(err){
+      showAlert("❌ Fines load error", "red");
+    }
+  }
+
+  async function loadStudentHistory(roll){
+    try{
+      const r = await fetch(buildGetUrl("getStudentHistory", { roll }));
+      const res = await safeJson(r);
+
+      if(!res.ok){
+        document.getElementById("historyStudentCard").classList.add("d-none");
+        historyEntriesBody.innerHTML = "";
+        historyFinesBody.innerHTML = "";
+        showAlert("❌ " + (res.message || "History load error"), "red");
+        if ((res.message || "").toLowerCase().includes("session expired")) logoutAdmin(false);
+        return;
+      }
+
+      const st = res.student || {};
+      document.getElementById("historyStudentCard").classList.remove("d-none");
+      document.getElementById("historyStudentInfo").innerHTML = `
+        <div class="row g-2">
+          <div class="col-md-4"><b>Name:</b> ${escapeHtml(st.name || "-")}</div>
+          <div class="col-md-4"><b>Roll:</b> ${escapeHtml(st.roll || "-")}</div>
+          <div class="col-md-4"><b>Branch:</b> ${escapeHtml(st.branch || "-")}</div>
+          <div class="col-md-4"><b>Room:</b> ${escapeHtml(st.room || "-")}</div>
+          <div class="col-md-4"><b>Phone:</b> ${escapeHtml(st.phone || "-")}</div>
+          <div class="col-md-4"><b>State:</b> ${escapeHtml(st.currentState || "-")}</div>
+        </div>
+      `;
+
+      renderHistoryEntries(res.entries || []);
+      renderHistoryFines(res.fines || []);
+    }catch(err){
+      showAlert("❌ Student history load error", "red");
+    }
+  }
+
+  async function refreshAllData(){
+    if(!checkAdminSession()) return;
+    setRangePill();
+    await loadDashboardBundle();
+  }
+
+  async function refreshVisiblePage(){
+    const currentPage = document.querySelector(".page.active")?.id || "pageDashboard";
+    markAllSectionsStale();
+
+    if (currentPage === "pageDashboard") {
+      await loadDashboardBundle();
+    } else if (currentPage === "pageEntries") {
+      await loadEntries();
+    } else if (currentPage === "pageFines") {
+      await loadFines();
+    } else if (
+      currentPage === "pageApproval" ||
+      currentPage === "pageLogs" ||
+      currentPage === "pageFineSummary" ||
+      currentPage === "pageOutside"
+    ) {
+      await loadDashboardBundle();
+    }
+  }
+
+  function switchPage(pageId, btn){
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".navbtn").forEach(b => b.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+    if(btn) btn.classList.add("active");
+    document.getElementById("pageTitle").innerText = btn ? btn.innerText : "Dashboard";
+    if (isMobileView()) closeSidebar();
+  }
+
+  document.getElementById("loginBtn").addEventListener("click", adminLogin);
+  document.getElementById("logoutBtn").addEventListener("click", () => logoutAdmin(true));
+  document.getElementById("refreshDashBtn").addEventListener("click", refreshVisiblePage);
+  document.getElementById("refreshHeroBtn").addEventListener("click", refreshVisiblePage);
+  document.getElementById("loadBtn").addEventListener("click", loadEntries);
+  document.getElementById("refreshAllBtn").addEventListener("click", async () => {
+    markAllSectionsStale();
+    await refreshAllData();
+  });
+  document.getElementById("reloadFinesBtn").addEventListener("click", loadFines);
+  document.getElementById("reloadPendingBtn").addEventListener("click", loadDashboardBundle);
+  document.getElementById("reloadLogsBtn").addEventListener("click", loadDashboardBundle);
+
+  document.getElementById("applyRangeBtn").addEventListener("click", () => {
+    setRangePill();
+    if (entriesLoaded) renderTrendChart();
+  });
+
+  document.getElementById("searchInput").addEventListener("input", () => renderTable(cachedEntries));
+  document.getElementById("approvalSearchInput").addEventListener("input", () => renderPending(cachedPending));
+  document.getElementById("logSearchInput").addEventListener("input", () => renderLogs(cachedLogs));
+  document.getElementById("fineStatusFilter").addEventListener("change", loadFines);
+
+  document.getElementById("searchHistoryBtn").addEventListener("click", () => {
+    const roll = document.getElementById("historyRollInput").value.trim();
+    if(!roll){
+      showAlert("❌ Enter roll number", "red");
+      return;
+    }
+    loadStudentHistory(roll);
+  });
+
+  document.getElementById("clearHistoryBtn").addEventListener("click", () => {
+    document.getElementById("historyRollInput").value = "";
+    document.getElementById("historyStudentCard").classList.add("d-none");
+    historyEntriesBody.innerHTML = "";
+    historyFinesBody.innerHTML = "";
+  });
+
+  document.getElementById("navDash").addEventListener("click", async function(){
+    switchPage("pageDashboard", this);
+    if (!dashboardLoaded) await loadDashboardBundle();
+  });
+
+  document.getElementById("navEntries").addEventListener("click", async function(){
+    switchPage("pageEntries", this);
+    if (!entriesLoaded) await loadEntries();
+  });
+
+  document.getElementById("navOutside").addEventListener("click", async function(){
+    switchPage("pageOutside", this);
+    if (!dashboardLoaded) await loadDashboardBundle();
+  });
+
+  document.getElementById("navFines").addEventListener("click", async function(){
+    switchPage("pageFines", this);
+    if (!finesLoaded) await loadFines();
+  });
+
+  document.getElementById("navApproval").addEventListener("click", async function(){
+    switchPage("pageApproval", this);
+    if (!approvalsLoaded) await loadDashboardBundle();
+  });
+
+  document.getElementById("navLogs").addEventListener("click", async function(){
+    switchPage("pageLogs", this);
+    if (!logsLoaded) await loadDashboardBundle();
+  });
+
+  document.getElementById("navFineSummary").addEventListener("click", async function(){
+    switchPage("pageFineSummary", this);
+    if (!fineSummaryLoaded) await loadDashboardBundle();
+  });
+
+  document.getElementById("navHistory").addEventListener("click", function(){
+    switchPage("pageHistory", this);
+  });
+
+  document.getElementById("username").addEventListener("keydown", function(e){
+    if(e.key === "Enter") adminLogin();
+  });
+
+  document.getElementById("password").addEventListener("keydown", function(e){
+    if(e.key === "Enter") adminLogin();
+  });
+
+  document.getElementById("mobileMenuBtnTop").addEventListener("click", openSidebar);
+  document.getElementById("mobileMenuBtnHero").addEventListener("click", openSidebar);
+  document.getElementById("sidebarOverlay").addEventListener("click", closeSidebar);
+  window.addEventListener("resize", handleResponsiveSidebar);
+
+  window.addEventListener("load", async () => {
+    const session = sessionStorage.getItem(sessionKey);
+    const role = (sessionStorage.getItem(roleKey) || "").toUpperCase();
+
+    if (session && (role === "ADMIN" || role === "WARDEN")) {
+      setLoggedInUI(true);
+      updateRoleTag();
+      setRangePill();
+      await refreshAllData();
+    } else {
+      setLoggedInUI(false);
+      updateRoleTag();
+      setRangePill();
+    }
+  });
+</script>
+
+</body>
+</html>

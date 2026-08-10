@@ -1,0 +1,825 @@
+ <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gate Verification</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#0f62fe;
+      --primary-dark:#0b4fd1;
+      --surface:#ffffff;
+      --line:#d9e4f5;
+      --text:#0f172a;
+      --muted:#5b6b86;
+      --shadow-sm:0 8px 22px rgba(15,98,254,.08);
+      --shadow-md:0 18px 40px rgba(15,98,254,.12);
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      min-height:100vh;
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15,98,254,.12), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(96,165,250,.12), transparent 18%),
+        linear-gradient(180deg,#f7fbff 0%,#edf4ff 52%,#f9fbff 100%);
+      overflow-x:hidden;
+      position:relative;
+    }
+
+    img{
+      max-width:100%;
+      height:auto;
+      display:block;
+    }
+
+    body::before,
+    body::after{
+      content:"";
+      position:fixed;
+      border-radius:50%;
+      pointer-events:none;
+      z-index:0;
+      filter:blur(8px);
+    }
+
+    body::before{
+      width:220px;
+      height:220px;
+      background:rgba(15,98,254,.10);
+      top:70px;
+      left:60px;
+      animation:floatBlob 8s ease-in-out infinite;
+    }
+
+    body::after{
+      width:280px;
+      height:280px;
+      background:rgba(59,130,246,.08);
+      right:50px;
+      bottom:50px;
+      animation:floatBlob 10s ease-in-out infinite;
+    }
+
+    @keyframes floatBlob{
+      0%,100%{transform:translateY(0) translateX(0)}
+      50%{transform:translateY(-14px) translateX(8px)}
+    }
+
+    .topbar,
+    .page-wrap{
+      position:relative;
+      z-index:1;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      padding:16px 26px;
+      background:rgba(255,255,255,.78);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+    }
+
+    .brand-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .brand-left img{
+      width:48px;
+      height:48px;
+      object-fit:contain;
+      border-radius:14px;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+      flex-shrink:0;
+    }
+
+    .brand-left span{
+      font-size:16px;
+      font-weight:900;
+      color:#163469;
+      letter-spacing:.4px;
+      white-space:nowrap;
+    }
+
+    .badge-soft{
+      padding:7px 12px;
+      border-radius:999px;
+      background:#eef4ff;
+      border:1px solid #d9e4f5;
+      font-size:12px;
+      font-weight:800;
+      color:#0f62fe;
+      white-space:nowrap;
+    }
+
+    .page-wrap{
+      min-height:calc(100vh - 81px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:26px 16px;
+    }
+
+    .login-shell{
+      width:100%;
+      max-width:460px;
+      margin:0 auto;
+    }
+
+    .login-card{
+      width:100%;
+      background:rgba(255,255,255,.88);
+      color:var(--text);
+      border-radius:28px;
+      box-shadow:var(--shadow-md);
+      padding:28px;
+      border:1px solid var(--line);
+      backdrop-filter:blur(12px);
+      position:relative;
+      overflow:hidden;
+      animation:fadeUp .6s ease;
+    }
+
+    .panel-shell{
+      width:100%;
+      max-width:1080px;
+      margin:0 auto;
+    }
+
+    .main-panel{
+      width:100%;
+      background:rgba(255,255,255,.80);
+      backdrop-filter:blur(12px);
+      border:1px solid var(--line);
+      border-radius:30px;
+      padding:22px;
+      box-shadow:var(--shadow-md);
+      animation:fadeUp .6s ease;
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(18px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .login-top,
+    .panel-top{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .login-logo,
+    .panel-logo{
+      width:68px;
+      height:68px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#0f62fe,#3b82f6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 14px 28px rgba(15,98,254,.20);
+      flex-shrink:0;
+    }
+
+    .login-logo img,
+    .panel-logo img{
+      width:42px;
+      height:42px;
+      object-fit:contain;
+    }
+
+    .login-top h2,
+    .panel-top h2{
+      margin:0;
+      font-size:28px;
+      font-weight:1000;
+      color:#163469;
+      line-height:1.1;
+    }
+
+    .login-top p,
+    .panel-top p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+      line-height:1.7;
+    }
+
+    .row-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .card-box{
+      background:#fff;
+      color:var(--text);
+      border-radius:22px;
+      box-shadow:var(--shadow-sm);
+      padding:18px;
+      border:1px solid var(--line);
+      min-height:320px;
+    }
+
+    .card-title{
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:14px;
+      color:#163469;
+    }
+
+    .form-label{
+      font-weight:800;
+      color:#294066;
+      font-size:13px;
+      margin-bottom:6px;
+    }
+
+    .form-control{
+      min-height:48px;
+      border-radius:12px;
+      border:1px solid #d7e3f7;
+      box-shadow:none!important;
+    }
+
+    .form-control:focus{
+      border-color:#8bb5ff;
+      box-shadow:0 0 0 .22rem rgba(15,98,254,.10)!important;
+    }
+
+    .action-btn{
+      width:100%;
+      min-height:48px;
+      border:none;
+      border-radius:12px;
+      font-weight:900;
+      color:#fff;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      transition:.22s ease;
+      margin-top:8px;
+      box-shadow:0 12px 24px rgba(15,98,254,.18);
+      padding:12px 16px;
+    }
+
+    .action-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 16px 28px rgba(15,98,254,.22);
+    }
+
+    .logout-wrap{
+      text-align:center;
+      margin-top:16px;
+    }
+
+    .logout-btn{
+      border:none;
+      padding:10px 22px;
+      border-radius:12px;
+      background:#f04657;
+      color:#fff;
+      font-weight:800;
+      box-shadow:0 10px 20px rgba(240,70,87,.18);
+    }
+
+    .result-box{
+      margin-top:14px;
+      background:#f8fbff;
+      border:1px solid #dbe8fb;
+      border-radius:16px;
+      padding:14px;
+      min-height:110px;
+      color:#111;
+      font-size:14px;
+      line-height:1.7;
+      white-space:pre-line;
+      word-break:break-word;
+    }
+
+    .muted{
+      color:#6b7280;
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .toast-box{
+      position:fixed;
+      top:16px;
+      left:50%;
+      transform:translateX(-50%) translateY(-10px);
+      min-width:200px;
+      max-width:380px;
+      padding:10px 14px;
+      border-radius:12px;
+      color:#fff;
+      font-weight:800;
+      font-size:13px;
+      text-align:center;
+      z-index:9999;
+      opacity:0;
+      visibility:hidden;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+      transition:all .22s ease;
+      pointer-events:none;
+    }
+
+    .toast-box.show{
+      opacity:1;
+      visibility:visible;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    .toast-box.success{ background:linear-gradient(45deg,#11998e,#38ef7d); }
+    .toast-box.error{ background:linear-gradient(45deg,#ff416c,#ff4b2b); }
+    .toast-box.info{ background:linear-gradient(45deg,#396afc,#2948ff); }
+
+    .hidden{display:none !important}
+
+    .mini-note{
+      text-align:center;
+      margin-top:14px;
+      color:#7a8aa8;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    @media(max-width:900px){
+      .row-grid{
+        grid-template-columns:1fr;
+      }
+
+      .main-panel{
+        padding:18px;
+      }
+    }
+
+    @media(max-width:768px){
+      .topbar{
+        padding:14px;
+      }
+
+      .brand-left{
+        width:100%;
+      }
+
+      .brand-left img{
+        width:42px;
+        height:42px;
+      }
+
+      .brand-left span{
+        font-size:14px;
+      }
+
+      .badge-soft{
+        width:100%;
+        text-align:center;
+      }
+
+      .page-wrap{
+        padding:18px 12px;
+      }
+
+      .login-card,.main-panel{
+        border-radius:22px;
+        padding:18px;
+      }
+
+      .login-top,
+      .panel-top{
+        align-items:flex-start;
+      }
+
+      .login-top h2,.panel-top h2{
+        font-size:22px;
+      }
+
+      .card-title{
+        font-size:18px;
+      }
+
+      .login-logo,.panel-logo{
+        width:58px;
+        height:58px;
+      }
+
+      .login-logo img,.panel-logo img{
+        width:36px;
+        height:36px;
+      }
+
+      .d-flex.gap-2{
+        flex-direction:column;
+      }
+    }
+
+    @media(max-width:480px){
+      .topbar{
+        padding:12px;
+      }
+
+      .page-wrap{
+        padding:14px 10px;
+      }
+
+      .login-card,.main-panel{
+        padding:16px;
+      }
+
+      .login-top,
+      .panel-top{
+        flex-direction:column;
+      }
+
+      .login-top h2,.panel-top h2{
+        font-size:20px;
+      }
+
+      .action-btn,
+      .logout-btn{
+        width:100%;
+      }
+
+      .toast-box{
+        max-width:calc(100% - 20px);
+        min-width:auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand-left">
+    <img src="logo.png" alt="Smart Entry Logo">
+    <span>SMART ENTRY PORTAL</span>
+  </div>
+  <div class="badge-soft">GATE VERIFICATION</div>
+</div>
+
+<div id="toastBox" class="toast-box"></div>
+
+<div class="page-wrap">
+  <div id="loginWrap" class="login-shell">
+    <div class="login-card">
+      <div class="login-top">
+        <div class="login-logo">
+          <img src="logo.png" alt="Smart Entry Logo">
+        </div>
+        <div>
+          <h2>Gate Login</h2>
+          <p>Login to access gate verification panel.</p>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input id="gateUsername" class="form-control" placeholder="Enter gate username">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input id="gatePassword" type="password" class="form-control" placeholder="Enter password">
+      </div>
+
+      <button id="gateLoginBtn" class="action-btn" type="button">Login</button>
+      <div class="mini-note">Secure gate access • Smart Entry Portal</div>
+    </div>
+  </div>
+
+  <div id="gatePanel" class="panel-shell hidden">
+    <div class="main-panel">
+      <div class="panel-top">
+        <div class="panel-logo">
+          <img src="logo.png" alt="Smart Entry Logo">
+        </div>
+        <div>
+          <h2>Gate Verification Panel</h2>
+          <p>Check OUT approval and verify IN using return code.</p>
+        </div>
+      </div>
+
+      <div class="row-grid">
+        <div class="card-box">
+          <div class="card-title">OUT Verification</div>
+
+          <div class="mb-3">
+            <label class="form-label">Roll Number</label>
+            <input id="outRoll" class="form-control" placeholder="Enter roll number">
+          </div>
+
+          <button id="checkOutBtn" class="action-btn" type="button">Check Approved OUT</button>
+
+          <div id="outResult" class="result-box">
+            <span class="muted">Approved OUT details yahan dikhenge.</span>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">IN Verification by Return Code</div>
+
+          <div class="mb-3">
+            <label class="form-label">Roll Number</label>
+            <input id="inRoll" class="form-control" placeholder="Enter roll number">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Return Code</label>
+            <input id="returnCode" class="form-control" placeholder="Enter return code">
+          </div>
+
+          <div class="d-flex gap-2 flex-wrap">
+            <button id="checkCodeBtn" class="action-btn" type="button" style="margin-top:0;">Check Code</button>
+            <button id="verifyInBtn" class="action-btn" type="button" style="margin-top:0;">Verify IN</button>
+          </div>
+
+          <div id="inResult" class="result-box">
+            <span class="muted">Return code details aur IN verification result yahan dikhega.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logout-wrap">
+        <button id="gateLogoutBtn" class="logout-btn" type="button">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzPHAnb85VNjt9C_HngDf-KXTyECCC7QlJKxvCevx4-AchwK1APRAiAsWYad7vYXfOz/exec";
+  const gateSessionKey = "gateSession";
+  const gateRoleKey = "gateRole";
+
+  function showToast(message, type = "info") {
+    const box = document.getElementById("toastBox");
+    box.className = "toast-box show " + type;
+    box.textContent = message;
+    clearTimeout(window.__gateToastTimer);
+    window.__gateToastTimer = setTimeout(() => {
+      box.className = "toast-box";
+    }, 1800);
+  }
+
+  function setGateUI(loggedIn) {
+    document.getElementById("loginWrap").classList.toggle("hidden", loggedIn);
+    document.getElementById("gatePanel").classList.toggle("hidden", !loggedIn);
+  }
+
+  function getGateToken() {
+    return sessionStorage.getItem(gateSessionKey) || "";
+  }
+
+  function buildGetUrl(action, extraParams = {}) {
+    const params = new URLSearchParams({
+      action,
+      token: getGateToken(),
+      ...extraParams
+    });
+    return `${WEB_APP_URL}?${params.toString()}`;
+  }
+
+  async function safeJson(r) {
+    const txt = await r.text();
+    try {
+      return JSON.parse(txt);
+    } catch (e) {
+      return { ok: false, message: "Server non-JSON response", raw: txt };
+    }
+  }
+
+  async function postToApi(payload) {
+    const r = await fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    return await safeJson(r);
+  }
+
+  function renderOutResult(data) {
+    const box = document.getElementById("outResult");
+    box.innerHTML = `
+<b>Name:</b> ${data.name || "-"}
+<b>Roll:</b> ${data.roll || "-"}
+<b>Branch:</b> ${data.branch || "-"}
+<b>Room:</b> ${data.room || "-"}
+<b>Status:</b> ${data.status || "-"}
+<b>Return Code:</b> ${data.returnCode || "-"}
+    `;
+  }
+
+  function renderCodeResult(data) {
+    const box = document.getElementById("inResult");
+    box.innerHTML = `
+<b>Name:</b> ${data.name || "-"}
+<b>Roll:</b> ${data.roll || "-"}
+<b>Branch:</b> ${data.branch || "-"}
+<b>Room:</b> ${data.room || "-"}
+<b>Code:</b> ${data.code || "-"}
+    `;
+  }
+
+  async function gateLogin() {
+    const username = document.getElementById("gateUsername").value.trim();
+    const password = document.getElementById("gatePassword").value.trim();
+
+    if (!username || !password) {
+      showToast("Username/Password required", "error");
+      return;
+    }
+
+    try {
+      const res = await postToApi({
+        action: "gateLogin",
+        username,
+        password
+      });
+
+      if (!res.ok) {
+        showToast(res.message || "Login failed", "error");
+        return;
+      }
+
+      sessionStorage.setItem(gateSessionKey, res.token || "");
+      sessionStorage.setItem(gateRoleKey, String(res.role || "").toUpperCase());
+
+      setGateUI(true);
+      showToast("Gate login successful", "success");
+    } catch (err) {
+      showToast("Network/Deploy URL issue", "error");
+    }
+  }
+
+  async function gateLogout() {
+    try {
+      const token = getGateToken();
+      const role = sessionStorage.getItem(gateRoleKey) || "GATE";
+      const username = document.getElementById("gateUsername").value.trim() || "gate";
+
+      if (token) {
+        await postToApi({
+          action: "logoutLog",
+          token,
+          username,
+          role
+        });
+      }
+    } catch (err) {
+    } finally {
+      sessionStorage.removeItem(gateSessionKey);
+      sessionStorage.removeItem(gateRoleKey);
+      setGateUI(false);
+      document.getElementById("outResult").innerHTML = `<span class="muted">Approved OUT details yahan dikhenge.</span>`;
+      document.getElementById("inResult").innerHTML = `<span class="muted">Return code details aur IN verification result yahan dikhega.</span>`;
+      showToast("Logged out", "success");
+    }
+  }
+
+  async function checkApprovedOut() {
+    const roll = document.getElementById("outRoll").value.trim();
+    if (!roll) {
+      showToast("Roll number required", "error");
+      return;
+    }
+
+    try {
+      const r = await fetch(buildGetUrl("getApprovedOutByRoll", { roll }));
+      const res = await safeJson(r);
+
+      if (!res.ok) {
+        document.getElementById("outResult").innerHTML = `<span class="muted">${res.message || "No approved OUT found"}</span>`;
+        showToast(res.message || "No approved OUT found", "error");
+        return;
+      }
+
+      renderOutResult(res.data || {});
+      showToast("Approved OUT found", "success");
+    } catch (err) {
+      showToast("OUT check failed", "error");
+    }
+  }
+
+  async function checkReturnCode() {
+    const roll = document.getElementById("inRoll").value.trim();
+    const code = document.getElementById("returnCode").value.trim();
+
+    if (!roll || !code) {
+      showToast("Roll and code required", "error");
+      return;
+    }
+
+    try {
+      const r = await fetch(buildGetUrl("getReturnCodeStatus", { roll, code }));
+      const res = await safeJson(r);
+
+      if (!res.ok) {
+        document.getElementById("inResult").innerHTML = `<span class="muted">${res.message || "Invalid code"}</span>`;
+        showToast(res.message || "Invalid code", "error");
+        return;
+      }
+
+      renderCodeResult(res.data || {});
+      showToast("Valid code", "success");
+    } catch (err) {
+      showToast("Code check failed", "error");
+    }
+  }
+
+  async function verifyInByCode() {
+    const roll = document.getElementById("inRoll").value.trim();
+    const code = document.getElementById("returnCode").value.trim();
+
+    if (!roll || !code) {
+      showToast("Roll and code required", "error");
+      return;
+    }
+
+    try {
+      const res = await postToApi({
+        action: "studentInByReturnCode",
+        token: getGateToken(),
+        roll,
+        code
+      });
+
+      if (!res.ok) {
+        document.getElementById("inResult").innerHTML = `<span class="muted">${res.message || "Verification failed"}</span>`;
+        showToast(res.message || "Verification failed", "error");
+        return;
+      }
+
+      document.getElementById("inResult").innerHTML = `
+<b>Name:</b> ${res.name || "-"}
+<b>Roll:</b> ${res.roll || "-"}
+<b>Room:</b> ${res.room || "-"}
+<b>Hostel:</b> ${res.hostel || "-"}
+<b>IN Entry Row:</b> ${res.inEntryRow || "-"}
+<b>Fine:</b> ${res.fine && res.fined ? ("₹ " + (res.fine.amount || 0) + " - " + (res.fine.reason || "")) : "No fine"}
+      `;
+
+      showToast("IN verified successfully", "success");
+    } catch (err) {
+      showToast("IN verification failed", "error");
+    }
+  }
+
+  document.getElementById("gateLoginBtn").addEventListener("click", gateLogin);
+  document.getElementById("gateLogoutBtn").addEventListener("click", gateLogout);
+  document.getElementById("checkOutBtn").addEventListener("click", checkApprovedOut);
+  document.getElementById("checkCodeBtn").addEventListener("click", checkReturnCode);
+  document.getElementById("verifyInBtn").addEventListener("click", verifyInByCode);
+
+  document.getElementById("gateUsername").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") gateLogin();
+  });
+  document.getElementById("gatePassword").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") gateLogin();
+  });
+  document.getElementById("outRoll").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkApprovedOut();
+  });
+  document.getElementById("inRoll").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkReturnCode();
+  });
+  document.getElementById("returnCode").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") verifyInByCode();
+  });
+
+  window.addEventListener("load", function() {
+    const token = sessionStorage.getItem(gateSessionKey);
+    const role = (sessionStorage.getItem(gateRoleKey) || "").toUpperCase();
+
+    if (token && role === "GATE") {
+      setGateUI(true);
+    } else {
+      setGateUI(false);
+    }
+  });
+</script>
+
+</body>
+</html>
